@@ -1,0 +1,727 @@
+\documentclass{article}
+
+\usepackage{fancyhdr}
+\usepackage{extramarks}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{caption,subcaption}
+
+%
+% Basic Document Settings
+%
+
+\topmargin=-0.45in
+\evensidemargin=0in
+\oddsidemargin=0in
+\textwidth=6.5in
+\textheight=9.0in
+\headsep=0.25in
+
+\linespread{1.1}
+
+\pagestyle{fancy}
+\lhead{\hmwkAuthorName}
+\chead{\hmwkClass:\ \hmwkTitle}
+\rhead{\firstxmark}
+\lfoot{\lastxmark}
+\cfoot{\thepage}
+
+\renewcommand\headrulewidth{0.4pt}
+\renewcommand\footrulewidth{0.4pt}
+
+\setlength\parindent{0pt}
+
+%
+% Create Problem Sections
+%
+
+\newcommand{\enterProblemHeader}[1]{
+    \nobreak\extramarks{}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+    \nobreak\extramarks{Problem \arabic{#1} (continued)}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+}
+
+\newcommand{\exitProblemHeader}[1]{
+    \nobreak\extramarks{Problem \arabic{#1} (continued)}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+    \stepcounter{#1}
+    \nobreak\extramarks{Problem \arabic{#1}}{}\nobreak{}
+}
+
+\setcounter{secnumdepth}{0}
+\newcounter{partCounter}
+\newcounter{homeworkProblemCounter}
+\setcounter{homeworkProblemCounter}{1}
+\nobreak\extramarks{Problem \arabic{homeworkProblemCounter}}{}\nobreak{}
+
+%
+% Homework Problem Environment
+%
+% This environment takes an optional argument. When given, it will adjust the
+% problem counter. This is useful for when the problems given for your
+% assignment aren't sequential. See the last 3 problems of this template for an
+% example.
+%
+\newenvironment{homeworkProblem}[1][-1]{
+    \ifnum#1>0
+        \setcounter{homeworkProblemCounter}{#1}
+    \fi
+    \section{Problem \arabic{homeworkProblemCounter}}
+    \setcounter{partCounter}{1}
+    \enterProblemHeader{homeworkProblemCounter}
+}{
+    \exitProblemHeader{homeworkProblemCounter}
+}
+
+%
+% Homework Details
+%   - Title
+%   - Due date
+%   - Class
+%   - Section/Time
+%   - Instructor
+%   - Author
+%
+
+\newcommand{\hmwkTitle}{Homework 1}
+\newcommand{\hmwkDueDate}{April 9, 2015}
+\newcommand{\hmwkClass}{Amath 586}
+\newcommand{\hmwkAuthorName}{Brian de Silva}
+
+%
+% Title Page
+%
+
+\title{
+    \vspace{2in}
+    \textmd{\textbf{\hmwkClass:\ \hmwkTitle}}\\
+    \normalsize\vspace{0.1in}\small{Due\ on\ \hmwkDueDate\ }\\
+    \vspace{3in}
+}
+
+\author{\textbf{\hmwkAuthorName}}
+\date{}
+
+\renewcommand{\part}[1]{\textbf{\large Part \Alph{partCounter}}\stepcounter{partCounter}\\}
+
+%
+% Various Helper Commands
+%
+
+% Useful for algorithms
+\newcommand{\alg}[1]{\textsc{\bfseries \footnotesize #1}}
+
+% For derivatives
+\newcommand{\deriv}[1]{\frac{\mathrm{d}}{\mathrm{d}x} (#1)}
+
+% For partial derivatives
+\newcommand{\pd}[2]{\frac{\partial}{\partial #1} (#2)}
+
+\newcommand{\pdd}[2]{\frac{\partial #1}{\partial #2}}
+
+% Integral dx
+\newcommand{\dx}{\mathrm{d}x}
+
+% Alias for the Solution section header
+\newcommand{\solution}{\textbf{\large Solution}}
+
+% Probability commands: Expectation, Variance, Covariance, Bias
+\newcommand{\E}{\mathrm{E}}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\Bias}{\mathrm{Bias}}
+
+% Some useful macros
+\input{./macros.tex}
+
+\begin{document}
+
+\maketitle
+
+\pagebreak
+
+% Problem 1
+\begin{homeworkProblem}
+    Prove that the ODE 
+    \[
+    u'(t) = \frac 1 {t^2 + u(t)^2}, \quad \mbox{for}~t \geq 1
+    \]
+    has a unique solution for all time from any initial value $u(1)=\eta$.
+    
+    \vskip 1cm
+    \textbf{Solution:} \\
+   Let \( f(u,t) = u'(t) \), $D~=~\reals \times [1,\infty),$ and observe that \( 0\leq f(u,t) \leq 1\) 
+   for \(t\geq 1\) \\
+   as \(t^2 + u(t)^2 > 1 \) for \( (u,t)\in D\). Also notice that for $(u,t)\in D$
+   \[\pdd{f}{u} = f_u = \frac{-2u}{(t^2 + u(t)^2)^2}, \]
+   so 
+   \[\lvert f_u\rvert = \frac{2|u|}{(t^2 + u(t)^2)^2} \leq \frac{2|u|}{(1 + u(t)^2)^2} \leq\frac{3\sqrt{3}}{8}. \]
+   The bound above can be obtained by locating the local maxima and minima of $g(u) = \frac{2u}{(1+u^2)^2}$.
+   
+   Since $f$ is differentiable with respect to $u$ for any $(u,t) \in D$, and $f_u$ is bounded for 
+   $(u,t) \in D$ we can apply the result from Section 5.2.1 which states that if $f$ is Lipschitz continuous over
+   a domain $D$, then there is a unique solution to the initial value problem above at least up to time 
+   $T^* =min(t_1,t_0 + a/S)$, where
+   \[
+        S = \max_{(u,t)\in D} |f(u,t)| \leq 1,
+   \]
+    and $a,~t_0,$ and $t_1$ appear in the definition of $D$ as 
+    \[
+        D~=~ \{(u,t) :~ |u-\eta|\leq a, ~t_0\leq t \leq t_1 \}
+    \]
+    (they specify the domain over which $f$ is Lipschitz continuous). But the calculations above show that
+    $t_0 = 1$ and that $a$ and $t_1$ can be taken to be arbitrarily large. It follows that $T^* = \infty$, 
+    i.e. that there exists a unique solution to the provided initial value problem for any $\eta$, and for all 
+    $t\geq 1$.
+\end{homeworkProblem}
+
+\pagebreak
+
+% Problem 2
+\begin{homeworkProblem}
+   Consider the system of ODEs
+    \begin{equation*}
+    \begin{split}
+    u_1' &= 3u_1 + 4u_2,\\
+    u_2' &= 5u_1 - 6u_2.\\
+    \end{split}
+    \end{equation*}
+    Determine the best possible Lipschitz constant for this system in the max-norm
+    $\|\cdot\|_\infty$ and the 1-norm $\|\cdot\|_1$. (See Appendix A.3.)
+    
+    \vskip 1cm
+    \textbf{Solution:} \\
+    This system can be written as \(\textbf{u}^\prime = A\textbf{u}\) where
+    \begin{equation*}
+        A = 
+            \bcm
+                3 & 4 \\
+                5 & -6
+            \ecm , ~\\ 
+        \textbf{u} = 
+            \bcm
+                u_1 \\
+                u_2
+            \ecm.
+    \end{equation*}
+    Recall that for any vector norm \(\|\cdot\|\) inducing a submultiplicative matrix norm we have
+    
+    \begin{equation*}
+    \|A\textbf{x} - A\textbf{y}\| = \|A(\textbf{x}-\textbf{y})\| \leq \|A\| ~ \|\textbf{x}-\textbf{y}\|
+    \end{equation*}
+    for any \(\textbf{x},\textbf{y}\). The (matrix) 1-norm and $\infty$-norm are just the maximum absolute column
+    and row sums, respectively, so $\|A\|_1 = 4 + 6 = 10$ and $\|A\|_\infty = 5+6=11$.
+    Since the 1-norm and $\infty$-norm induce submultipliative matrix norms,
+    \begin{equation*}
+        \|A\textbf{u}-A\textbf{u}^*\|_1 \leq \|A\|_1 ~ \|\textbf{u}-\textbf{u}^*\|_1 = 10\|\textbf{u}-\textbf{u}^*\|_1,
+    \end{equation*}
+    \begin{equation*}
+         \|A\textbf{u}-A\textbf{u}^*\|_\infty \leq \|A\|_\infty ~ \|\textbf{u}-\textbf{u}^*\|_\infty = 11\|\textbf{u}-\textbf{u}^*\|_\infty.
+    \end{equation*}
+    Thus 10 and 11 are Lipschitz constants for the system with respect to the 1 and infinity norms, respectively.
+    To see that they are the best possible Lipshitz constants, notice that equality is attained in the above
+    two equations for 
+    \begin{equation*}
+        \textbf{u}-\textbf{u}^* = \bcm 0 \\ 1 \ecm, ~ \ \textbf{u}-\textbf{u}^* = \bcm 1 \\ -1 \ecm
+    \end{equation*}
+    which are unit vectors with respect to the 1 and infinity norms, respectively.
+    
+\end{homeworkProblem}
+
+\pagebreak
+
+% Problem 3
+\begin{homeworkProblem}
+    The initial value problem
+    \[
+    v''(t) = -4v(t), \qquad v(0) = v_0,\quad v'(0) = v_0'
+    \]
+    has the solution $v(t) = v_0\cos(2t) + \half v_0' \sin(2t)$.  Determine this
+    solution by rewriting the ODE as a first order system $u' = Au$ so that
+    $u(t) = e^{At}u(0)$ and then computing the matrix exponential using (D.30)
+    in Appendix D.
+
+    \vskip 1cm
+    \textbf{Solution:} \\
+    Letting $x(t) = v(t)$ and $ y(t) = v'(t)$, we can rewrite the initial value problem as the following system
+    \begin{align*}
+        x' &= y, \\
+        y' &= -4x
+    \end{align*}
+    with initial conditions $x(0) = v_0, y(0)=v'_0$. In turn, we can represent this system as the matrix equation
+    $\textbf{u}'=A\textbf{u}$, with
+    \[
+    \textbf{u} = \bcm x \\ y \ecm,
+    A = \bcm
+            0 & 1 \\
+            -4 & 0
+        \ecm.
+    \]
+    Then the solution to the system is given by 
+    \[
+    \textbf{u}(t) = e^{At}\textbf{u}(0).
+    \]
+    
+    In order to compute the matrix exponential $e^{At}$ we will need the Jordan decomposition of $A$. \\
+    To this end $det(A-\lambda  I) = \lambda^2 + 4$, so the eigenvalues of $A$ are simply $\pm 2i$. 
+    It can easily be shown that the eigenvectors of $A$ are scalar multiples of 
+    \[
+    v_1 = \bcm i \\ 2 \ecm, v_2 = \bcm -i \\ 2 \ecm.
+    \]
+    Letting $R = [v_1,~ v_2]$ we see that $A = R\Lambda R^{-1}$, where 
+    \[
+    \Lambda =
+    \bcm
+        -2i & 0 \\
+        0 & 2i
+    \ecm.
+    \]
+    Hence 
+    \begin{align*}
+        e^{At} &= e^{R\Lambda R^{-1}} \\
+        &= Re^{\Lambda t}R^{-1} \\
+        &= \bcm i & -i \\ 2 & 2 \ecm \bcm e^{-2it} & 0 \\ 0 & e^{2it} \ecm
+        \bcm \frac{-i}{2} & \frac{1}{4} \\ \frac{i}{2} & \frac{1}{4}  \ecm \\
+        &= \bcm \cos(2t) & \frac{1}{2}\sin(2t) \\ -2\sin(2t) & \cos(2t) \ecm.
+    \end{align*}
+    
+    Therefore, 
+    \[
+    \textbf{u} = \bcm x \\ y \ecm = \bcm v \\ v' \ecm  = e^{At}\textbf{u}(0) = 
+    \bcm \cos(2t) & \frac{1}{2}\sin(2t) \\ -2\sin(2t) & \cos(2t) \ecm \bcm v_0 \\ v'_0\ecm = 
+    \bcm v_0\cos(2t) + \frac{v'_0}{2}\sin(2t) \\ -2v_0\sin(2t) + v'_0\cos(2t) \ecm,
+    \]
+    from which we get $v(t) = v_0\cos(2t) + \frac{v'_0}{2}\sin(2t)$.
+    
+    
+    
+    % \part
+
+    % Find the least squares estimator for \(\hat{\beta_1}\) for the slope
+    % \(\beta_1\).
+    % \\
+
+    % \solution
+
+    % To find the least squares estimator, we should minimize our Residual Sum
+    % of Squares, RSS:
+
+    % \[
+    %     \begin{split}
+    %         RSS &= \sum_{i = 1}^{n} {(Y_i - \hat{Y_i})}^2
+    %         \\
+    %         &= \sum_{i = 1}^{n} {(Y_i - \hat{\beta_1} x_i)}^2
+    %     \end{split}
+    % \]
+
+    % By taking the partial derivative in respect to \(\hat{\beta_1}\), we get:
+
+    % \[
+    %     \pd{
+    %         \hat{\beta_1}
+    %     }{RSS}
+    %     = -2 \sum_{i = 1}^{n} {x_i (Y_i - \hat{\beta_1} x_i)}
+    %     = 0
+    % \]
+
+    % This gives us:
+
+    % \[
+    %     \begin{split}
+    %         \sum_{i = 1}^{n} {x_i (Y_i - \hat{\beta_1} x_i)}
+    %         &= \sum_{i = 1}^{n} {x_i Y_i} - \sum_{i = 1}^{n} \hat{\beta_1} x_i^2
+    %         \\
+    %         &= \sum_{i = 1}^{n} {x_i Y_i} - \hat{\beta_1}\sum_{i = 1}^{n} x_i^2
+    %     \end{split}
+    % \]
+
+    % Solving for \(\hat{\beta_1}\) gives the final estimator for \(\beta_1\):
+
+    % \[
+    %     \begin{split}
+    %         \hat{\beta_1}
+    %         &= \frac{
+    %             \sum {x_i Y_i}
+    %         }{
+    %             \sum x_i^2
+    %         }
+    %     \end{split}
+    % \]
+
+    % \pagebreak
+
+    % \part
+
+    % Calculate the bias and the variance for the estimated slope
+    % \(\hat{\beta_1}\).
+    % \\
+
+    % \solution
+
+    % For the bias, we need to calculate the expected value
+    % \(\E[\hat{\beta_1}]\):
+
+    % \[
+    %     \begin{split}
+    %         \E[\hat{\beta_1}]
+    %         &= \E \left[ \frac{
+    %             \sum {x_i Y_i}
+    %         }{
+    %             \sum x_i^2
+    %         }\right]
+    %         \\
+    %         &= \frac{
+    %             \sum {x_i \E[Y_i]}
+    %         }{
+    %             \sum x_i^2
+    %         }
+    %         \\
+    %         &= \frac{
+    %             \sum {x_i (\beta_1 x_i)}
+    %         }{
+    %             \sum x_i^2
+    %         }
+    %         \\
+    %         &= \frac{
+    %             \sum {x_i^2 \beta_1}
+    %         }{
+    %             \sum x_i^2
+    %         }
+    %         \\
+    %         &= \beta_1 \frac{
+    %             \sum {x_i^2 \beta_1}
+    %         }{
+    %             \sum x_i^2
+    %         }
+    %         \\
+    %         &= \beta_1
+    %     \end{split}
+    % \]
+
+    % Thus since our estimator's expected value is \(\beta_1\), we can conclude
+    % that the bias of our estimator is 0.
+    % \\
+
+    % For the variance:
+
+    % \[
+    %     \begin{split}
+    %         \Var[\hat{\beta_1}]
+    %         &= \Var \left[ \frac{
+    %             \sum {x_i Y_i}
+    %         }{
+    %             \sum x_i^2
+    %         }\right]
+    %         \\
+    %         &=
+    %         \frac{
+    %             \sum {x_i^2}
+    %         }{
+    %             \sum x_i^2 \sum x_i^2
+    %         } \Var[Y_i]
+    %         \\
+    %         &=
+    %         \frac{
+    %             \sum {x_i^2}
+    %         }{
+    %             \sum x_i^2 \sum x_i^2
+    %         } \Var[Y_i]
+    %         \\
+    %         &=
+    %         \frac{
+    %             1
+    %         }{
+    %             \sum x_i^2
+    %         } \Var[Y_i]
+    %         \\
+    %         &=
+    %         \frac{
+    %             1
+    %         }{
+    %             \sum x_i^2
+    %         } \sigma^2
+    %         \\
+    %         &=
+    %         \frac{
+    %             \sigma^2
+    %         }{
+    %             \sum x_i^2
+    %         }
+    %     \end{split}
+    % \]
+
+\end{homeworkProblem}
+
+\pagebreak
+
+% Problem 4
+\begin{homeworkProblem}
+    Compute the leading term in the local truncation error of the following
+    methods:
+    \begin{enumerate}
+    \item the trapezoidal method (5.22),
+    \item the 2-step Adams-Bashforth method,
+    \item the Runge-Kutta method (5.32).
+    \end{enumerate}
+
+    \vspace{1cm}
+    \textbf{Solution:} \\ 
+    
+    Throughout this problem I will use $u$ to denote $u(t_n)$, $f$ for $f(u(t_n))$, etc. when it does not add
+    confusion to do so.
+    The following Taylor expansions will be useful later in the problem:
+    \begin{align}
+        u(t+k) &= u(t) + ku'(t) + \frac{k^2}{2}u''(t) + \frac{k^3}{3!}u'''(t) + O(k^4) \label{eq:unp1} \\
+        u(t-k) &= u(t) - ku'(t) + \frac{k^2}{2}u''(t) - \frac{k^3}{3!}u'''(t) + O(k^4) \label{eq:unm1} \\
+        f(u(t+k)) &= u'(t) + ku''(t) + \frac{k^2}{2}u'''(t)+\frac{k^3}{3!}u^{(4)}(t) + O(k^4) \label{eq:fnp1} \\
+        f(u(t-k)) &= u'(t) - ku''(t) + \frac{k^2}{2}u'''(t) - \frac{k^3}{3!}u^{(4)}(t) + O(k^4) \label{eq:fnm1}
+    \end{align}
+    
+    \begin{enumerate}
+    \item
+    
+    The local truncation error for the trapezoidal method (5.22) is given by
+    \[
+        \tau^n = \frac{u(t_n+k) - u(t_n)}{k} - \half (f(u(t_n)) + f(u(t_n+k))).
+    \]
+    
+    Substituting (\ref{eq:unp1}) and (\ref{eq:fnp1}) for $u(t_n+k)$ and $f(u(t_n+k))$ and cancelling some terms yields
+    
+    \begin{align*}
+        \tau^n &=\frac{ku' + \frac{k^2}{2}u'' + \frac{k^3}{3!}u''' + O(k^4)}{k} - 
+        \half (2u' + ku'' + \frac{k^2}{2}u''' + O(k^3)) \\
+        &= u' + \frac{k}{2}u'' + \frac{k^2}{3!}u'''  - (u' + \frac{k}{2}u'' + \frac{k^2}{4}u''') + O(k^3) \\
+        &= \frac{-k^2}{12}u'''(t_n) + O(k^3).
+    \end{align*}
+    
+    
+    \item
+    
+    The local truncation error for the 2-step Adams-Bashforth method is given by
+     
+     \[
+        \tau^n = \frac{u(t_n+k) - u(t_n)}{k} - \half(3f(u(t_n))-f(u(t_n-k))).
+     \]
+     
+     \pagebreak
+     
+     Substituting (\ref{eq:unp1}) and (\ref{eq:fnm1}) for $u(t_n+k)$ and $f(u(t_n-k))$ and cancelling some
+     terms gives
+     \begin{align*}
+        \tau^n &= \frac{ku' + \frac{k^2}{2}u'' + \frac{k^3}{3!}u''' + O(k^4)}{k} - 
+        \half(2u' + ku'' - \frac{k^2}{2}u''') + O(k^3) \\
+        &=u' + \frac{k}{2}u'' + \frac{k^2}{3!}u''' - 
+        (u' + \frac{k}{2}u'' - \frac{k^2}{4}u''') +O(k^3)\\ 
+        &=\frac{5}{12}k^2u'''(t_n) + O(k^3).
+     \end{align*}
+     
+     \item
+     
+     The local truncation error for the 2-stage Runge-Kutta method (5.32) is given by
+     \[
+     \tau^n = \frac{u(t_n+k) - u(t_n)}{k} -f\left(u(t_n) + \frac{k}{2}f(u(t_n),t_n),~t_n+\frac{k}{2}\right).
+     \]
+     In this problem I use $f$ to denote $f(u(t),t)$, $f_t$ to denote $\pdd{f}{t}(u(t),t)$, etc. when
+     doing so does not add ambiguity. We need to use slightly different Taylor series expansions than before 
+     to find the leading term of the local truncation error for this method. First, we have
+     \begin{align*}
+        u''(t) &= \frac{d}{dt}(f(u,t))= f_t + ff_u, \\
+        u'''(t) &= \frac{d}{dt}(u''(t))\\
+        &= \frac{d}{dt}(f_t + ff_u)\\ 
+        &=f_{tt} + 2ff_{ut} + f_{uu}f^2 + (f_u)^2f + f_uf_t.
+     \end{align*}
+     
+     Using these and the multidimensional Taylor theorem we obtain
+     \begin{align*}
+         u(t+k) &= u + ku' + \frac{k^2}{2}u'' + \frac{k^3}{3!}u''' + O(k^4) \\
+         &= u(t) + kf + \frac{k^2}{2}(f_t + ff_u) \\
+         &+ \frac{k^3}{3!}(f_{tt} + 2ff_{ut} + f_{uu}f^2 + (f_u)^2f 
+         + f_uf_t) + O(k^4). \\
+        f\left(u(t) + \frac{k}{2}f(u(t),t),~t+\frac{k}{2}\right) &= \\
+        &f + \frac{k}{2}ff_u + \frac{k}{2}f_t +  \half(\frac{k}{2}f)^2f_{uu}+\frac{k^2}{8}f_{tt} +
+        \frac{k}{2}(\frac{k}{2}f)f_{ut} + O(k^3).
+     \end{align*}
+     
+     \pagebreak
+     
+     Substituting the above Taylor expansions into the expression for the local truncation error and 
+     cancelling some terms gives
+     
+     \begin{align*}
+        \tau^n &= \frac{kf + \frac{k^2}{2}(f_t + ff_u) + \frac{k^3}{3!}(f_{tt} + 2ff_{ut} + f_{uu}f^2 + (f_u)^2f 
+         + f_uf_t)}{k}\\
+         &- (f + \frac{k}{2}ff_u + \frac{k}{2}f_t +  \half(\frac{k}{2}f)^2f_{uu}+\frac{k^2}{8}f_{tt} +
+        \frac{k}{2}(\frac{k}{2}f)f_{ut}) + O(k^3) \\
+        &= f + \frac{k}{2}(f_t + ff_u) + \frac{k^2}{3!}(f_{tt} + 2ff_{ut} + f_{uu}f^2 + (f_u)^2f 
+         + f_uf_t) \\
+         &- (f + \frac{k}{2}(ff_u + f_t) + \frac{k^2}{8}(f^2f_{uu}+f_{tt} +2ff_{ut})) + O(k^3) \\ 
+         &= \frac{k^2}{6}(\frac{1}{4}f_{tt} + \frac{1}{2}ff_{ut} + \frac{1}{4}f{uu}f^2 +(f_u)^2f +
+         f_uf_t)+O(k^3).
+     \end{align*}
+    \end{enumerate}
+    
+\end{homeworkProblem}
+
+
+% Problem 5
+\begin{homeworkProblem}
+    Determine the coefficients $\beta_0,~\beta_1,~\beta_2$ for the third
+    order, 2-step Adams-Moulton method.  Do this in two different ways:
+    \begin{enumerate} 
+     \item Using the expression for the local truncation error in Section 5.9.1,
+     \item Using the relation
+     \[
+     u(t_{n+2}) = u(t_{n+1}) + \int_{t_{n+1}}^{t_{n+2}}\,f(u(s))\,ds.
+     \]
+     Interpolate  a quadratic polynomial $p(t)$ through the three values
+     $f(U^n),~f(U^{n+1})$ and $f(U^{n+2})$ and then integrate this polynomial
+     exactly to obtain the formula.  The coefficients of the polynomial will
+     depend on the three values $f(U^{n+j})$.   It's easiest to use the
+     ``Newton form'' of the interpolating polynomial and consider the three
+    times $t_n=-k$, $t_{n+1}=0$, and $t_{n+2}=k$ so that $p(t)$ has the form
+    \[
+    p(t) = A + B(t+k) + C(t+k)t
+    \]
+    where $A,~B$, and $C$ are the appropriate divided differences based on the
+    data.  Then integrate from $0$ to $k$.   (The method has the same
+    coefficients at any time, so this is valid.)
+    \end{enumerate}
+    
+    \vspace{1cm}
+    \textbf{Solution:}\\
+    \begin{enumerate}
+   \item 
+    The expression for the local truncation error for a 2-step Adams-Moulton method given in section 5.9.1 is
+    
+    \begin{align*}
+        \tau(t_{n+2}) &= \frac{1}{k}\left(\sum^2_{j=0}\alpha_j\right)u(t_n) + 
+        \left(\sum^2_{j=0}(j\alpha_j-\beta_j) \right)u'(t_n) \\
+        &+ k\left(\sum^2_{j=0}(j^2\alpha_j-j\beta_j) \right)u''(t_n)
+        + k^2\left(\sum^2_{j=0}(j^3\alpha_j-j^2\beta_j) \right)u'''(t_n) + O(k^3).
+    \end{align*}
+    
+    
+    We already know $\alpha_0=0, \alpha_1=-1,\alpha_2=1$ (hence the $O(\frac{1}{k})$ term drops out),
+    so we must choose $\beta_i,~ i=1,2,3$ so that the $O(1), ~O(k),$ and $O(k^2)$ terms vanish (if we try to 
+    eliminate the $O(k^3)$ term we end up with an overdetermined system of equations which we cannot solve).
+    Each sum gives an equation:
+    
+    \begin{align*}
+        \left(\sum^2_{j=0}(j\alpha_j-\beta_j) \right)u'(t_n) &= (-\beta_0-\beta_1-\beta_2 + 1)u'(t_n) = 0
+        &\Longrightarrow~ &\beta_0 &+ \beta_1&+\beta_2 &= 1 \\
+        k\left(\sum^2_{j=0}(j^2\alpha_j-j\beta_j) \right)u''(t_n) &= k(-\beta_1-2\beta_2 + \frac{3}{2})u''(t_n)=0
+        &\Longrightarrow~ & &~\beta_1 &+ 2\beta_2 &=\frac{3}{2} \\
+        k^2\left(\sum^2_{j=0}(j^3\alpha_j-j^2\beta_j) \right)u'''(t_n) &= k^2(-\half\beta_1 - 2\beta_2 +
+        \frac{7}{6})u'''(t_n)
+        =0 &\Longrightarrow~ & &~\half\beta_1 &+ 2\beta_2 &=\frac{7}{6}.
+    \end{align*}
+    Solving these equations simultaneously for $\beta_0, \beta_1$, and $\beta_2$ yields
+    $\beta_0 = -\frac{1}{12},~ \beta_1 = \frac{2}{3},$ and $\beta_2 = \frac{5}{12}$, giving the 2-step 
+    Adams-Moulton method:
+    \[
+    U^{n+2} = U_{n+1} + \frac{k}{12}(-f(U^n) + 8f(U^{n+1}) + 5f(U_{n+2})).
+    \]
+    
+    \item
+    Taking $t_n=-k,~t_{n+1}=0,$ and $t_{n+2}=k$, the ``Newton form'' (and using divided differences notation)
+    of the quadratic polynomial interpolating
+    $f(U^n),~f(U^{n+1})$ and $f(U^{n+2})$ is given by
+    \[
+    p(t) = [f(U^{n})] + [f(U^{n}),f(U^{n+1})](t+k) + [f(U^{n}),f(U^{n+1}),f(U^{n+1})](t+k)t.
+    \]
+    
+    The divided differences are
+    \begin{align*}
+        [f(U^{n})] &= f(U^{n}), \\
+        [f(U^{n}),f(U^{n+1})] &= \frac{f(U^{n+1})-f(U^{n})}{k}, \\
+        [f(U^{n}),f(U^{n+1}),f(U^{n+2})] &= \frac{[f(U^{n+1}),f(U^{n+2})]-[f(U^{n}),f(U^{n+1})]}{2k} = 
+        \frac{f(U^{n+2}) + f(U^{n}) - 2f(U^{n-1})}{2k^2}.
+    \end{align*}
+    
+    Integrating $p(t)$ from 0 to $k$ gives
+    
+    \begin{align*}
+        \int^k_0p(t)dt &= kf(U^{n}) + \frac{f(U^{n+1})-f(U^{n})}{k}(\half t^2 + kt)\big|_0^k +
+        \frac{f(U^{n+2}) + f(U^{n}) - 2f(U^{n-1})}{2k^2}(\frac{1}{3}t^3 + \half t^2k)\big|_0^k \\
+        &= kf(U^{n}) + (f(U^{n+1})-f(U^{n}))\frac{3k}{2} +(f(U^{n+2}) + f(U^{n}) - 2f(U^{n+1})) \frac{5k}{12} \\
+        &=\frac{k}{12}(-f(U^{n}) + 8f(U^{n+1}) + 5f(U^{n+2})).
+    \end{align*}
+    
+    From this it follows that the coefficients $\beta_0,~\beta_1,~\beta_2$ are $\beta_0 = \frac{-1}{12},~
+    \beta_1 =\frac{2}{3},~\beta_2=\frac{5}{12}$, as before.
+    
+    \end{enumerate}
+\end{homeworkProblem}
+
+% Problem 6
+\begin{homeworkProblem}
+    The initial value problem 
+    \begin{equation}\label{ode1}
+    \begin{split}
+    u'(t) &= u(t)^2 - \sin(t) - \cos^2(t),\\
+    u(0) &= 1
+    \end{split}
+    \end{equation}
+    has the solution $u(t) = \cos(t)$. 
+    
+    Write a computer code (preferably in Python or Matlab) to solve
+    problem \eqn{ode1} up to time $T=8$ with various different time
+    steps $\Delta t = T / N$, with
+    \[
+    N = 25,~ 50,~ 100,~ 200,~ 400,~ 800,~ 1600,~ 3200.
+    \]
+    
+    Do this using two different methods:
+    \begin{enumerate} 
+    \item Forward Euler
+    \item The Runge-Kutta method (5.32).
+    Note that this should be second order accurate for sufficiently small
+    $\Delta t$.  If not, then you might have a bug.
+    \end{enumerate} 
+    
+    Produce a log-log plot of the errors versus
+    $\Delta t$, with both plots in the same figure.
+    
+    \vspace{1cm}
+    \textbf{Solution:}
+
+    
+    \begin{figure}[h!]
+        \centering
+        \caption{Forward Euler method}
+        \begin{subfigure}[b]{0.49\textwidth}
+            \includegraphics[width=\textwidth]{FE_appxN50}
+            \caption{The Forward Euler solution with $N=50$}
+            \label{fig:FEplot1}
+        \end{subfigure}
+        \begin{subfigure}[b]{0.49\textwidth}
+            \includegraphics[width=\textwidth]{FE_error}
+            \caption{Log-log plot of the error in Forward Euler}
+            \label{fig:FEerror}
+        \end{subfigure}
+    \end{figure}
+    
+    As the timestep is decreased in both cases, the error at $t=8$ begins decreasing as $h$ for the Forward
+    Euler method and as $h^2$ for the Runge-Kutta method.
+
+
+    \begin{figure}[h!]
+        \centering
+        \caption{2-stage Runge-Kutta method}
+        \begin{subfigure}[b]{0.49\textwidth}
+            \includegraphics[width=\textwidth]{RK_appxN50}
+            \caption{The Runge-Kutta solution with $N=50$}
+        \end{subfigure}
+        \begin{subfigure}[b]{0.49\textwidth}
+            \includegraphics[width=\textwidth]{RK_error}
+            \caption{Log-log plot of the error in 2-stage Runge-Kutta}
+        \end{subfigure}
+    \end{figure}
+    
+\end{homeworkProblem}
+
+
+\end{document}
+
+

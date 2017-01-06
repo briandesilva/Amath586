@@ -1,0 +1,662 @@
+\documentclass{article}
+
+\usepackage{fancyhdr}
+\usepackage{extramarks}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{caption,subcaption}
+\usepackage{subfig}
+
+%
+% Basic Document Settings
+%
+
+\topmargin=-0.45in
+\evensidemargin=0in
+\oddsidemargin=0in
+\textwidth=6.5in
+\textheight=9.0in
+\headsep=0.25in
+
+\linespread{1.1}
+
+\pagestyle{fancy}
+\lhead{\hmwkAuthorName}
+\chead{\hmwkClass:\ \hmwkTitle}
+\rhead{\firstxmark}
+\lfoot{\lastxmark}
+\cfoot{\thepage}
+
+\renewcommand\headrulewidth{0.4pt}
+\renewcommand\footrulewidth{0.4pt}
+
+\setlength\parindent{0pt}
+
+%
+% Create Problem Sections
+%
+
+\newcommand{\enterProblemHeader}[1]{
+    \nobreak\extramarks{}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+    \nobreak\extramarks{Problem \arabic{#1} (continued)}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+}
+
+\newcommand{\exitProblemHeader}[1]{
+    \nobreak\extramarks{Problem \arabic{#1} (continued)}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+    \stepcounter{#1}
+    \nobreak\extramarks{Problem \arabic{#1}}{}\nobreak{}
+}
+
+\setcounter{secnumdepth}{0}
+\newcounter{partCounter}
+\newcounter{homeworkProblemCounter}
+\setcounter{homeworkProblemCounter}{1}
+\nobreak\extramarks{Problem \arabic{homeworkProblemCounter}}{}\nobreak{}
+
+%
+% Homework Problem Environment
+%
+% This environment takes an optional argument. When given, it will adjust the
+% problem counter. This is useful for when the problems given for your
+% assignment aren't sequential. See the last 3 problems of this template for an
+% example.
+%
+\newenvironment{homeworkProblem}[1][-1]{
+    \ifnum#1>0
+        \setcounter{homeworkProblemCounter}{#1}
+    \fi
+    \section{Problem \arabic{homeworkProblemCounter}}
+    \setcounter{partCounter}{1}
+    \enterProblemHeader{homeworkProblemCounter}
+}{
+    \exitProblemHeader{homeworkProblemCounter}
+}
+
+%
+% Homework Details
+%   - Title
+%   - Due date
+%   - Class
+%   - Section/Time
+%   - Instructor
+%   - Author
+%
+
+\newcommand{\hmwkTitle}{Homework 4}
+\newcommand{\hmwkDueDate}{May 12, 2015}
+\newcommand{\hmwkClass}{Amath 586}
+\newcommand{\hmwkAuthorName}{Brian de Silva}
+
+%
+% Title Page
+%
+
+\title{
+    \vspace{2in}
+    \textmd{\textbf{\hmwkClass:\ \hmwkTitle}}\\
+    \normalsize\vspace{0.1in}\small{Due\ on\ \hmwkDueDate\ }\\
+    \vspace{3in}
+}
+
+\author{\textbf{\hmwkAuthorName}}
+\date{}
+
+\renewcommand{\part}[1]{\textbf{\large Part \Alph{partCounter}}\stepcounter{partCounter}\\}
+
+%
+% Various Helper Commands
+%
+
+% Useful for algorithms
+\newcommand{\alg}[1]{\textsc{\bfseries \footnotesize #1}}
+
+% For derivatives
+\newcommand{\deriv}[1]{\frac{\mathrm{d}}{\mathrm{d}x} (#1)}
+
+% For partial derivatives
+\newcommand{\pd}[2]{\frac{\partial}{\partial #1} (#2)}
+
+\newcommand{\pdd}[2]{\frac{\partial #1}{\partial #2}}
+
+% Integral dx
+\newcommand{\dx}{\mathrm{d}x}
+
+% Alias for the Solution section header
+\newcommand{\solution}{\textbf{\large Solution}}
+
+% Probability commands: Expectation, Variance, Covariance, Bias
+\newcommand{\E}{\mathrm{E}}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\Bias}{\mathrm{Bias}}
+
+% Some useful macros
+\input{./macros.tex}
+
+\begin{document}
+
+\maketitle
+
+\pagebreak
+
+% Problem 1
+\begin{homeworkProblem}
+    Consider the following method for solving the heat equation
+    $u_t=u_{xx}$:
+    \[
+    U_i^{n+2} = U_i^n + \frac{2k}{h^2}(U_{i-1}^{n+1} - 2U_i^{n+1} +
+    U_{i+1}^{n+1}).
+    \]
+    \begin{enumerate}
+    \item Determine the formal order of accuracy of this method 
+    (in both space and time) based on computing the local truncation error.
+    
+    \item Suppose we take $k=\alpha h^2$ for some fixed $\alpha>0$ and refine
+    the grid.  Show that this method fails to be 
+    Lax-Richtmyer stable for any choice of $\alpha$.
+    
+    Do this in two ways: 
+    \begin{itemize}
+    \item Consider the MOL interpretation and the stability region of
+    the time-discretization being used.
+    \item Use von Neumann analysis and solve a quadratic equation for $g(\xi)$.
+    \end{itemize} 
+    
+    \item What if we take $k=\alpha h^3$ for some fixed $\alpha>0$ and refine
+    the grid. Would this method be stable?
+    
+    \end{enumerate}
+    
+    
+    \vskip 1cm
+    \textbf{Solution:} \\
+    \begin{enumerate}
+        
+        % Part (a)
+        \item Throughout this derivation of the local truncation error, let $u$ denote $u(x,t+k)$, $u_t$ $\pd{t}{u}|_{x,t+k}$, etc..
+        Rather than expanding each term
+        about $u(x,t)$, we expand about $u(x,t+k)$ and interpret the method as the midpoint rule applied at $u(x,t+k)$. We have the 
+        following Taylor expansions:
+        \begin{align*}
+            u(x,t+2k) &= u + ku_t + \frac{k^2}{2}u_{tt} + \frac{k^3}{6}u_{ttt} +O(k^4), \\
+            u(x,t) &= u - ku_t + \frac{k^2}{2}u_{tt} - \frac{k^3}{6}u_{ttt} +O(k^4), \\
+            u(x+h,t) &= u + hu_x + \frac{h^2}{2}u_{xx} + \frac{h^3}{6}u_{xxx} + \frac{h^4}{4!}u_{xxxx} + O(h^5), \\
+            u(x-h,t) &= u - hu_x + \frac{h^2}{2}u_{xx} - \frac{h^3}{6}u_{xxx} + \frac{h^4}{4!}u_{xxxx} + O(h^5).
+        \end{align*}
+        
+        Substituting these into the local truncation error expression
+        \[
+        \tau(x,t+k) = \frac{u(x,t+2k) - u(x,t)}{2k} - \frac{1}{h^2}(u(x-h,t+k) - 2u(x,t+k) +u(x+h,t+k))
+        \]
+        and making obvious cancellations, we obtain
+        \begin{align*}
+        \tau(x,t+k)  &= u_t + \frac{k^2}{6}u_{tt}+O(k^3) - (u_{xx} + \frac{h^2}{12}u_{xxxx} + O(h^3)) \\
+                     &= \left(\frac{k^2}{6} + \frac{h^2}{12}\right)u_{xxxx} + O(k^3 + h^3),
+        \end{align*}
+        where we have used $u_t = u_{xx}$ to cancel terms and replace $u_{tt} with u_{xxxx}$. Hence the method is formally
+        second order accurate in both $h$ and $k$.
+        
+        \pagebreak
+        
+        % Part (b)
+        \item \begin{enumerate}
+            \item \textbf{Method of Lines}
+            
+            We interpret the above finite difference method as the midpoint method applied to the system of ODEs
+            \[
+            U_i'(t) = \frac{1}{h^2}(U_{i-1}(t) -2U_i(t)+U_{i+1}), \qquad i=1,2,\dots,m,
+            \]
+            which can be expressed more compactly as 
+            \[
+            U'(t) = AU(t) + g(t),
+            \]
+            where
+            \[
+            A = \frac{1}{h^2}\bcm -2 & 1 & & & & \\
+            1 & -2 & 1 & & & \\
+             & \ddots & \ddots & \ddots & & \\
+             & & & & & \\
+             & & & & & 1 \\
+             & & & & 1 & -2
+            \ecm
+            \]
+            and $g(t)$ simply takes care of the boundary terms.
+            
+            As was noted in class in order for this method to be stable we need each of the roots of $\pi(\zeta;k\lambda_p)$ to be less
+            than one in magnitude, where $\lambda_p$ is the $p^{th}$ eigenvalue of $A$ and $\pi(\zeta;z)$ is defined with respect to
+            the midpoint method. For this to hold we need $k\lambda_p \in S$ for each $p$, where $S$ is the stability region for the
+            midpoint method. Or we at least need $k\lambda_p$ to approach $S$ as $k$ is refined.
+            Recall that $S={z \in \complex| z = ib, ~ b\in \reals, ~ |b| \leq 1 }$. $A$ has eigenvalues 
+            $\lambda_p = \frac{2}{h^2}(cos(p\pi h) - 1)$ for $p=1,2,\dots, m,$ so if the method is to be stable it must satisfy
+            $k\lambda_p = \frac{2k}{h^2}(cos(p\pi h) - 1) \in S.$ The eigenvalue farthest from the origin is approximately
+            $\frac{-4}{h^2}$, so $\frac{-4k}{h^2} \in S$ for stability. If we choose $k=\alpha h^2$ then this becomes 
+            $-4\alpha \notin S$. Hence the method is not stable for any choice of $\alpha>0$.
+            
+            \item \textbf{von Neumann Analysis}
+            
+            Letting $\hat U^n$ be the Fourier transform of the grid function $U^n$ we have 
+            $$\hat U^{n+1} = g(\xi)\hat U^n.$$
+            If it can be shown that 
+            $$|g(\xi)| \leq 1 + \alpha k$$
+            with $\alpha$ independent from $\xi$ then it will follow that the method is stable. If we can show the opposite, that
+            $$|g(\xi)| > 1 + \alpha k$$
+            then the method is unstable. Assuming $$U_j^n = e^{ijh\xi}$$ and $$U_j^{n+1} = g(\xi)e^{ijh\xi},$$ we can express the 
+            finite difference scheme in terms of its Fourier transform and solve for $g(\xi)$
+            
+            \begin{align*}
+            &g(\xi)^2e^{ijh\xi} = e^{ijh\xi} + \frac{k}{h^2}g(\xi)(e^{i(j-1)h\xi}-2e^{ijh\xi}+e^{i(j+1)h\xi}) \\
+            &\Rightarrow g(\xi)^2 = 1 + g(\xi)\frac{4k}{h^2}(cos(\xi h) - 1) \\
+            &\Rightarrow g(\xi)^2 - g(\xi)\frac{4k}{h^2}(cos(\xi h) - 1) - 1 = 0 \\
+            &\Rightarrow g(\xi) = \frac{2k}{h^2}(cos(\xi h) - 1) \pm \left(\frac{4k^2}{h^4}(cos(\xi h)^2 + 1\right)^\half.
+            \end{align*}
+            
+            For $\xi= \frac{\pi}{h}, ~ cos(\xi h) = -1$ and so the lesser of the two possible solutions for $g$ becomes
+            \[
+            g(\xi) = \frac{-4k}{h^2} - \left(\frac{4k^2}{h^4}+1\right)^\half.
+            \]
+            If we set $k=\alpha h^2$ then this simplifies to
+            \[
+            g(\xi) = -4\alpha - \left(16\alpha^2 +1\right)^\half < -1
+            \]
+            for any choice of $\alpha >0$. Hence the method is unstable for any choice of $\alpha >0$.
+            \end{enumerate}
+        
+        
+        % Part (c)
+        \item Consider the condition for stability specified during the Method of Lines analysis. The eigenvalue farthest from the origin
+        was $\lambda_p \approx \frac{-4}{h^2}$, so if we take $k=\alpha h^3$, $\lambda_p k \approx -4\alpha h$ which tends to $0 \in S$
+        as the grid is refined, i.e. it approaches $S$ as $h \to 0$. As we saw in class, this allows us to conclude that the method is
+        stable.
+    
+    \end{enumerate}
+    
+    
+\end{homeworkProblem}
+
+\pagebreak
+
+% Problem 2
+\begin{homeworkProblem}
+   Consider the PDE
+    \begin{equation}\label{diffdecay}
+    u_t = \kappa u_{xx} - \gamma u,
+    \end{equation}
+    which models diffusion combined with decay provided $\kappa>0$ and $\gamma>0$.  
+    Consider methods of the form
+    \begin{equation}\label{ddtheta}
+    U_j^{n+1} =U_j^n+{k\kappa\over 2h^2} [U_{j-1}^n-2U_j^n +U_{j+1}^n
+    +U_{j-1}^{n+1} - 2U_j^{n+1} + U_{j+1}^{n+1}]
+    - k\gamma[(1-\theta)U_j^n + \theta U_j^{n+1}]
+    \end{equation}
+    where $\theta$ is a parameter.  In particular, if $\theta=1/2$ then the
+    decay term is modeled with the same centered-in-time approach as the
+    diffusion term and the method can be obtained by applying the Trapezoidal
+    method to the MOL formulation of the PDE.   If $\theta=0$ then the decay
+    term is handled explicitly.  For more general reaction-diffusion equations
+    it may be advantageous to handle the reaction terms explicitly since these
+    terms are generally nonlinear, so making them implicit would require solving
+    nonlinear systems in each time step (whereas handling the diffusion term
+    implicitly only gives a linear system to solve in each time step).
+    
+    \begin{enumerate}
+    \item By computing the local truncation error, show that this method is
+    $\bigo(k^p+h^2)$ accurate, where $p=2$ if $\theta = 1/2$ and $p=1$
+    otherwise.
+    \item Using von Neumann analysis, show that this method is unconditionally
+    stable if $\theta \geq 1/2$.
+    \item Show that if $\theta = 0$ then the method is stable provided $k\leq
+    2/\gamma$, independent of $h$.
+    \end{enumerate} 
+    
+    
+    \vskip 1cm
+    \textbf{Solution:} \\ 
+    
+    \begin{enumerate}
+    
+    % Part (a)
+    \item In this derivation of the local truncation error let $u$ denote $u(x,t)$, $u_t$ denote $\pd{t}{u}$, etc.. We Taylor expand
+    about $u(x,t)$:
+    \begin{align*}
+    u(x,t+k) &= u +ku_t+\frac{k^2}{2}u_{tt} +\frac{k^3}{4!}u_{ttt} + O(k^4) \\
+    u(x-h,t) &= u -hu_x + \frac{h^2}{2}u_{xx} -\frac{h^3}{6}u_{xxx}+\frac{h^4}{4!}u_{xxxx} +O(h^5) \\
+    u(x+h,t) &= u +hu_x + \frac{h^2}{2}u_{xx} +\frac{h^3}{6}u_{xxx}+\frac{h^4}{4!}u_{xxxx} +O(h^5) \\
+    u(x+h,t+k) &= u +hu_x +ku_t +\half(h^2u_{xx}+k^2u_{tt} + 2hku_{xt}) + \frac{1}{6}(h^3u_{xxx}+k^3u_{ttt} + 3hk^2u_{xtt} +
+    3h^2ku_{xxt}) + \dots \\
+    u(x-h,t+k) &= u -hu_x +ku_t +\half(h^2u_{xx}+k^2u_{tt} + 2hku_{xt}) + \frac{1}{6}(-h^3u_{xxx}+k^3u_{ttt} - 3hk^2u_{xtt} +
+    3h^2ku_{xxt}) + \dots.
+    \end{align*}
+    
+    Substituting these into the finite difference equation and making obvious cancellations yields
+    \begin{align*}
+    \tau(x,t) &= (u_t - \kappa u_{xx} + \gamma u) + \frac{k}{2}u_{tt} + \frac{k^2}{6}u_{ttt} - \frac{\kappa h^2}{12}u_{xxxx}
+    -\frac{k\kappa}{2}u_{xxt} + \gamma\theta ku_t \\ 
+    &+ \frac{\theta \gamma k^2}{2}u_{tt} + O(h^4 + k^3) \\
+     &= \frac{k}{2}\pd{t}{u_t -\kappa u_xx + 2\gamma \theta u} + \frac{k^2}{6}u_{ttt} - \frac{\kappa h^2}{12}u_{xxxx} + O(h^4 +k^3).
+    \end{align*}
+    If $\theta =\half$ we can use the PDE to cancel the $O(k)$ term in the local truncation error, giving overall $O(k^2 + h^2)$
+    accuracy. Otherwise this term persists and the method is only $O(k + h^2)$ accurate.
+    \pagebreak
+    
+    % Part (b)
+    \item We proceed in a similar manner as before, we substitute $e^{ijh\xi}$ for $U_j^n$, $g(\xi)e^{ijh\xi}$ for $U_j^{n+1}$, etc.
+    into the finite difference scheme to determine $g(\xi)$
+    \begin{align*}
+    g(\xi)e^{ijh\xi} &= e^{ijh\xi}+ e^{ijh\xi}\frac{2k\kappa}{2h^2}\left(cos(\xi h) - 1 + g(\xi)(cos(\xi h) - 1) \right) -
+    k\gamma e^{ijh\xi}(1-\theta + \theta g(\xi)) \\
+    \Rightarrow g(\xi) &= \frac{h^2(1-k\gamma + k\gamma \theta) +k\kappa (cos(\xi h)-1)}{h^2(1+k\gamma \theta) + 
+    k \kappa(1-cos(\xi h))}.
+    \end{align*}
+    Letting $C = k \kappa(1-cos(\xi h))$, we see that $C \geq 0$ for any $\xi$ and $g$ can be written
+    \[
+    g(\xi) = 1 - \frac{h^2k\gamma + 2C}{h^2(1+k\gamma \theta) + C}.
+    \]
+    It is easy to see that this quantity will always be less than $1$, so the only way the method could be unstable is if $g(\xi)<-1$.
+    For this to occur we would need to have
+    \begin{align*}
+    \frac{h^2k\gamma + 2C}{h^2(1+k\gamma \theta) + C} &\geq 2 \\
+    \Rightarrow \quad h^2k\gamma + 2C &\geq 2 (h^2(1+k\gamma \theta) + C) \\
+    \Rightarrow \quad k\gamma &\geq 2(1+k\gamma \theta) \\
+    \Rightarrow \quad k\gamma(1-2\theta) &\geq 2.
+    \end{align*}
+    If $\theta \geq \half$ then $1-2\theta \leq 0 ~\Rightarrow~ k\gamma(1-2\theta) \leq ~0 ~\leq2 \quad \forall k>0$. Hence the method is
+    unconditionally stable for $\theta \geq \half$.
+    
+    % Part (c)
+    \item
+    If $\theta =0$ then for $g(\xi)$ as above, $|g(\xi)|\leq 1$ if 
+    $k\gamma(1-2\theta) = k\gamma ~ \leq 2 ~ \Rightarrow k~\leq~\frac{2}{\gamma}.$ Note that this restriction holds independent of $h$.
+    \end{enumerate}
+    
+\end{homeworkProblem}
+
+\pagebreak
+
+% Problem 3
+\begin{homeworkProblem}
+    \begin{enumerate} 
+    \item The m-file \verb+heat_CN.m+ from the book repository
+    solves the heat equation $u_t = \kappa u_{xx}$  (with $\kappa = 0.02$)
+    using the Crank-Nicolson method.
+    
+    Run this code, and by changing the number of grid points, confirm that it is
+    second-order accurate.  (Observe how the error at some fixed time such as $T=1$
+    behaves as $k$ and $h$ go to zero with a fixed relation between $k$ and $h$,
+    such as $k = 4h$.)
+    
+    Note that in order for the time step to evenly define the time interval the
+    way this code is set up, you need to specify values such as $m=19, 39, 79$.
+    (The number of interior grid points.)
+    
+    Produce a log-log plot of the error versus $h$.
+    
+    \item Modify this code to produce a new version that
+    implements the TR-BDF2 method on the same problem.  Test it to confirm that
+    it is also second order accurate.  Explain how you determined the proper
+    boundary conditions in each stage of this Runge-Kutta method.
+    
+    \item Modify the code to produce a new m-file or Python code \verb+heat_FE+ that
+    implements the forward Euler explicit 
+    method on the same problem.  Test it to confirm that
+    it is $\bigo(h^2)$ accurate as $h\goto 0$ provided when $k = 24 h^2$ is
+    used, which is within the stability limit for $\kappa = 0.02$.  Note how
+    many more time steps are required than with Crank-Nicolson or TR-BDF2,
+    especially on finer grids.
+    
+    \item Test \verb+heat_FE+ with $k = 26 h^2$, for which it should be
+    unstable.  Note that the instability does not become apparent until about
+    time 4.5 for the parameter values $\kappa = 0.02,~ m=39,~\beta = 150$.
+    Explain why the instability takes several hundred time steps to appear, and
+    why it appears as a sawtooth oscillation. 
+    
+    {\bf Hint:} What wave numbers $\xi$ are growing exponentially for these
+    parameter values?  What is the initial magnitude of the most unstable
+    eigenmode in the given initial data?  The expression (E.30) for the Fourier
+    transform of a Gaussian may be useful.
+    
+    \end{enumerate}
+
+    \vskip 1cm
+    \textbf{Solution:} \\
+    Note: All trials are run from $t=0$ to final time $t=1$ unless explicitly stated otherwise.
+    
+    \begin{enumerate}
+    
+    % Part (a)
+    \item To test \verb+heat_CN.m+ I observed how the error behaved at $T=1$ as $k$ and $h$ were refined for $k=4h$.
+    
+    \begin{figure}[!ht]
+    \centering
+    \includegraphics[width=.6\textwidth]{586hw4CNerr3a}
+    \caption{log-log plot of error using Crank-Nicolson method}
+    \label{fig:CN3a}
+    \end{figure}
+    
+    As is demonstrated in Figure \ref{fig:CN3a} the Crank-Nicolson method exhibits second-order accuracy when applied to the heat
+    equation with $\kappa=0.02$. The numerically approximated order of accuracy was $2.06$.
+    
+    
+    % Part (b)
+    \item Next, to test the TR-BDF2 method I created, I followed the same procedure as in (a) with all parameters the same as for that
+    test.
+    
+    \begin{figure}[!ht]
+    \centering
+    \includegraphics[width=.6\textwidth]{586hw4trbdf2err3}
+    \caption{log-log plot of error using TR-BDF2 method}
+    \label{fig:BDF3b}
+    \end{figure}
+    
+    Figure \ref{fig:BDF3b} illustrates that the method is achieving second order accuracy on the heat equation as well. The boundary
+    conditions for the first step of the two-stage Runge-Kutta method were the same as in the Crank-Nicolson method, except with
+    the boundary conditions evaluated at time $t + \frac{k}{2}$ rather than at $t$ since we are only taking a half-step at the first
+    stage. In the second stage the boundary conditions were determined from the following equation
+    \[
+    U_j^{n+1} = \frac{1}{3}(4U^*_j-U_j^n+\frac{k\kappa}{h^2}(U^{n+1}_{j-1}-2U^{n+1}_{j}+U^{n+1}_{j+1})).
+    \]
+    Letting $j=1$ and $j=m$ we find that the first and last components (first and mth) of the right-hand-side vector need to have added
+    to them the values at the left and right boundaries (multiplied by $\frac{k\kappa}{3h^2}$) at time $t+k$, respectively.The
+    numerically approximated order of accuracy was $2.00$. See the m-file \verb+heat_TRBDF2.m+.
+    
+    % Part (c)
+    \item After modifying \verb+heat_CN.m+ to use the Forward Euler method to advance the numerical solutions forward in time I tested
+    its accuracy in a similar manner as before, but setting $k=24h^2$.
+    
+    \begin{figure}[!ht]
+    \centering
+    \includegraphics[width=.6\textwidth]{586hw4FEerr3}
+    \caption{log-log plot of error using Forward Euler method}
+    \label{fig:FE3c}
+    \end{figure}
+    
+    Figure \ref{fig:FE3c} demonstrates that the method achieved second order accuracy. The numerically approximated order of accuracy
+    was 2.00. See the m-file \verb+heat_FE.m+.
+    
+    % Part (d)
+    \item For this problem I used final time $t=5$ instead of $t=1$. 
+    Setting $k=26h^2$ causes the method of lines approach using Forward Euler to discretize the time derivative in the heat
+    equation to be unstable.
+    
+    \begin{figure}[!ht]
+    \centering
+    \includegraphics[width=.45\textwidth]{586hw4FEunstable1} ~
+    \includegraphics[width=.45\textwidth]{586hw4FEunstable2} ~
+    \includegraphics[width=.45\textwidth]{586hw4FEunstable3}
+    \caption{Evolution of instability in Forward Euler Method of Lines (left: 240 time steps, middle: 260, right: 280}
+    \label{fig:FE3d}
+    \end{figure}
+    
+    In Figure \ref{fig:FE3d} we see how the instability progresses as more time steps are taken when 41 grid points are used. Notice
+    how the instability does not become noticeable until after roughly 260-280 time steps have been taken. The instability gets
+    much worse if time is progressed further (see the attached Matlab notebook).
+    
+    Recall from the earlier von Neumann analysis that if we consider how the method works on a single wavenumber by setting
+    $U_j^n = e^{ijh\xi}$ 
+    and $U^{n+1}_j = g(\xi)e^{ijh\xi}$, then the method will be unstable if $|g(\xi)|>1$. 
+    Substituting the expressions above into the method and solving for $g(\xi)$ yields
+    \[
+    g(\xi) = 1 + \frac{2k\kappa}{h^2}(cos(\xi h) - 1).
+    \]
+    Observe that if we let $k=26h^2$ and $\xi=\frac{\pi}{h}$ (the largest wavenumber representable on our grid), then 
+    $g(\xi) = -1.08$. Thus for the wavenumber $\xi=\frac{\pi}{h}$, after $n$ time steps the method will give 
+    $\hat U^{n}_j = (-1.08)^n \hat U^0_j$, where $\hat U^{n}_j$ is the Fourier transform of $U^n_j$. Using Parseval's identity, the
+    initial magnitude of this unstable eigenmode is simply the magnitude of the Fourier transform of the initial condition, evaluated
+    at $\xi=\frac{\pi}{h}$. Following the hint and using the fact that $u(x,0) = u_0(x) = e^{-\beta(x-0.4)^2}$, we have 
+    \[
+    |\hat u_0(\xi)| = \frac{1}{\sqrt{2\beta}}e^{\frac{-\xi^2}{4\beta}}.
+    \]
+    For $\beta ~=~ 150,~ \xi ~=~ \frac{\pi}{h} ~=~ 40\pi$, $|\hat u_(\xi)| \approx 2.14 \times 10^{-13}$. Since 
+    $(1.08)^n \cdot \approx 2.14 \times 10^{-13}$ does not reach $O(10^{-3}$ until some time after $n=200$ the exponential growth
+    in this eigenmode is not noticed until $t$ becomes fairly large. The reason the instability manifests itself as a sawtooth
+    oscillation is because a sawtooth oscillation is exactly the way the eigenmode corresponding to $\xi=\frac{\pi}{h}$ is represented
+    on our chosen grid. It oscillates at a rate exactly matching our grid spacing and so the grid points only capture its points of
+    highest and lowest amplitude, one after another.
+    
+    \end{enumerate}
+    
+
+\end{homeworkProblem}
+
+\begin{homeworkProblem}
+    \begin{enumerate}
+
+    \item Modify \verb+heat_CN.m+  (or \verb+heat_CN.py+)
+    to solve the heat equation for
+    $-1\leq x \leq 1$ with step function  initial data
+    \begin{equation} \label{9.3a}
+    u(x,0) = \begin{choices}  1 \when x<0\\  0 \when x\geq 0. \end{choices}
+    \end{equation} 
+    With appropriate Dirichlet boundary conditions, the exact solution is
+    \begin{equation} \label{9.3b}
+    u(x,t) = \half \, \text{erfc} \left(x / \sqrt{4 \kappa t}\right)
+    \end{equation} 
+    for $t>0$, where erfc is the {\em complementary error function}
+    \[
+    \text{erfc}(x) = \frac{2}{\sqrt{\pi}} \int_x^\infty e^{-z^2}\,dz.
+    \]
+    Note that {\tt erfc} is a built-in Matlab function and in Python you could
+    use \verb+scipy.special.erfc+.
+    
+    \begin{enumerate}
+    \item
+    Use $\kappa = 0.02$ and
+    test this method using $m=39$ and $k = 10h$ for $-1\leq x \leq 1$.  
+    Note that there is an initial rapid transient decay of the high
+    wave numbers that is not captured well with this size time step.
+    
+    \item
+    How small do you need to take the time step to get reasonable results?
+    For a suitably small time step, explain why you get much better results by
+    using $m=38$ than $m=39$.  What is the observed order of accuracy as $k\goto
+    0$ when $k = \alpha h$ with $\alpha$ suitably small and $m$ even?
+    
+    Hint: You might also see what you get if you redefine the initial data so
+    that $u(0,0)=1/2$ with $u(x,0)$ the same everywhere else, rather than
+    $u(0,0) = 0$.
+    
+    \end{enumerate}
+    
+    \item Modify your TR-BDF2 solver from Problem 3
+    to solve the heat equation for
+    $-1\leq x \leq 1$ with step function  initial data as above.
+    Test this routine using $k=10h$ and estimate the order of accuracy as
+    $k\goto 0$ with $m$ even.  Why does the TR-BDF2 method work better than
+    Crank-Nicolson?
+    
+    \end{enumerate} 
+
+    \vskip 1cm
+    \textbf{Solution:} \\
+    
+    \begin{enumerate}
+    
+    % Part (a)
+    \item The modified version of \verb+heat_CN.m+ is stored in \verb+heat_CN_alt_BCs.m+.
+        \begin{enumerate}
+        
+        % Part (i)
+        \item First we test the method using the specified parameters.
+        \begin{figure}[!ht]
+        \centering
+        \includegraphics[width=.6\textwidth]{586hw4CN_plot4a}
+        \caption{Crank-Nicolson Method with $k=10h$}
+        \label{fig:CN4ai}
+        \end{figure}
+        
+        Figure \ref{fig:CN4ai} shows the numerical solution generated by the Crank-Nicolson method when $k=10h$. Notice the oscillation
+        which occurs at $x=0$. The maximum error at $t=1$ is $0.204$.
+        
+        % Part (ii)
+        \item After multiple numerical tests using even and odd numbers of grid points, $\alpha = 2$ seems to be an appropriate
+        restriction to get reasonable results. That is for $\alpha=2$ the error in the approximation at $t=1$ behaves predictably
+        as $k$ is refined. If $\alpha$ is taken to be much larger than $2$, $2.5$, say, then as the grid is refined, eventually the error
+        stops decreasing and starts leveling off instead. 
+        
+        \begin{figure}[!ht]
+        \centering
+        \includegraphics[width=.45\textwidth]{586hw4CN_plot4aalpha6} ~
+        \includegraphics[width=.45\textwidth]{586hw4CN_plot4aalpha5}
+        \caption{Crank-Nicolson method with left:$k=6h$, right:$k=5h$}
+        \label{fig:CN4aii}
+        \end{figure}
+        
+        Figure \ref{fig:CN4aii} shows an example of how the solution seems able to resolve the transient for $\alpha=5$, but not
+        $\alpha=6$. However, if the grid is further refined, we find that $\alpha=5$ is too lax a condition as mentioned above, and the
+        error starts to worsen.
+        
+        \begin{figure}[!ht]
+        \centering
+        \includegraphics[width=.45\textwidth]{586hw4CN_errploteven} ~
+        \includegraphics[width=.45\textwidth]{586hw4CN_errplotodd}
+        \caption{Crank-Nicolson method with (left:even, right:odd) number of grid points}
+        \label{fig:CN4aiieo}
+        \end{figure}
+        
+        In Figure \ref{fig:CN4aiieo} we have the maximum error at $t=1$ using even and odd numbers of grid points. The computed
+        orders of accuracy were $2.03$ using an even number and $1.01$ using an odd number. The reason for the disparity in accuracy
+        between the two cases is that when an odd number of grid points are used, one of the points lies directly at $0$. This causes
+        the initial condition to be less accurately represented on the odd grid than the even one. If we follow the hint and set
+        $u(0,0) = \half$ then the method attains second order accuracy on both the even and odd grids. This tells us that the difference
+        in performance must be due to the way the initial condition is resolved.
+        
+        \end{enumerate}
+    
+    
+    % Part (b)
+    \item The TR-BDF2 solver allows us to take a larger time step than we could using the Crank-Nicolson method, resulting in faster
+    overall performance. As noted in part (a)(ii) of the problem, it is essential that we choose an even number of grid points to
+    better resolve the initial condition and get second order convergence.
+    
+    \begin{figure}[!ht]
+    \centering
+    \includegraphics[width=.6\textwidth]{586hw4TRBDF2_errploteven}
+    \caption{TR-BDF2 Method error with $k=10h$}
+    \label{fig:TRBDF4b}
+    \end{figure}
+    
+    In Figure \ref{fig:TRBDF4b} we show the behavior of the maximum error in the TR-BDF2 method as k is decreased.
+    This method works better than Crank-Nicolson because it is both L-stable and A-stable, whereas the implicit method relied upon
+    in the Crank-Nicolson method, the Trapezoid rule, is merely A-stable. Note that the TR-BDF2 method also uses the Trapezoid
+    method in one of its stages, but it is L-stable nevertheless. The rapid initial transient in the solution leads
+    to a loss in stability in the Crank-Nicolson method, but not TR-BDF2, since rapid initial
+    transients are known to be troublesome for the trapezoidal method by itself.
+    The numerically approximated order of accuracy is $2.59$. The code for the modified method can be found in \verb+TRBDF2_alt.m+.
+    
+    \end{enumerate}
+    
+    
+    
+    \end{homeworkProblem}
+
+\pagebreak
+~~
+\vskip 10cm
+\centering
+\huge \textbf{Appendix: Code}
+
+
+\end{document}
+

@@ -1,0 +1,529 @@
+\documentclass{article}
+
+\usepackage{fancyhdr}
+\usepackage{extramarks}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{caption,subcaption}
+
+%
+% Basic Document Settings
+%
+
+\topmargin=-0.45in
+\evensidemargin=0in
+\oddsidemargin=0in
+\textwidth=6.5in
+\textheight=9.0in
+\headsep=0.25in
+
+\linespread{1.1}
+
+\pagestyle{fancy}
+\lhead{\hmwkAuthorName}
+\chead{\hmwkClass:\ \hmwkTitle}
+\rhead{\firstxmark}
+\lfoot{\lastxmark}
+\cfoot{\thepage}
+
+\renewcommand\headrulewidth{0.4pt}
+\renewcommand\footrulewidth{0.4pt}
+
+\setlength\parindent{0pt}
+
+%
+% Create Problem Sections
+%
+
+\newcommand{\enterProblemHeader}[1]{
+    \nobreak\extramarks{}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+    \nobreak\extramarks{Problem \arabic{#1} (continued)}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+}
+
+\newcommand{\exitProblemHeader}[1]{
+    \nobreak\extramarks{Problem \arabic{#1} (continued)}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+    \stepcounter{#1}
+    \nobreak\extramarks{Problem \arabic{#1}}{}\nobreak{}
+}
+
+\setcounter{secnumdepth}{0}
+\newcounter{partCounter}
+\newcounter{homeworkProblemCounter}
+\setcounter{homeworkProblemCounter}{1}
+\nobreak\extramarks{Problem \arabic{homeworkProblemCounter}}{}\nobreak{}
+
+%
+% Homework Problem Environment
+%
+% This environment takes an optional argument. When given, it will adjust the
+% problem counter. This is useful for when the problems given for your
+% assignment aren't sequential. See the last 3 problems of this template for an
+% example.
+%
+\newenvironment{homeworkProblem}[1][-1]{
+    \ifnum#1>0
+        \setcounter{homeworkProblemCounter}{#1}
+    \fi
+    \section{Problem \arabic{homeworkProblemCounter}}
+    \setcounter{partCounter}{1}
+    \enterProblemHeader{homeworkProblemCounter}
+}{
+    \exitProblemHeader{homeworkProblemCounter}
+}
+
+%
+% Homework Details
+%   - Title
+%   - Due date
+%   - Class
+%   - Section/Time
+%   - Instructor
+%   - Author
+%
+
+\newcommand{\hmwkTitle}{Homework 2}
+\newcommand{\hmwkDueDate}{April 16, 2015}
+\newcommand{\hmwkClass}{Amath 586}
+\newcommand{\hmwkAuthorName}{Brian de Silva}
+
+%
+% Title Page
+%
+
+\title{
+    \vspace{2in}
+    \textmd{\textbf{\hmwkClass:\ \hmwkTitle}}\\
+    \normalsize\vspace{0.1in}\small{Due\ on\ \hmwkDueDate\ }\\
+    \vspace{3in}
+}
+
+\author{\textbf{\hmwkAuthorName}}
+\date{}
+
+\renewcommand{\part}[1]{\textbf{\large Part \Alph{partCounter}}\stepcounter{partCounter}\\}
+
+%
+% Various Helper Commands
+%
+
+% Useful for algorithms
+\newcommand{\alg}[1]{\textsc{\bfseries \footnotesize #1}}
+
+% For derivatives
+\newcommand{\deriv}[1]{\frac{\mathrm{d}}{\mathrm{d}x} (#1)}
+
+% For partial derivatives
+\newcommand{\pd}[2]{\frac{\partial}{\partial #1} (#2)}
+
+\newcommand{\pdd}[2]{\frac{\partial #1}{\partial #2}}
+
+% Integral dx
+\newcommand{\dx}{\mathrm{d}x}
+
+% Alias for the Solution section header
+\newcommand{\solution}{\textbf{\large Solution}}
+
+% Probability commands: Expectation, Variance, Covariance, Bias
+\newcommand{\E}{\mathrm{E}}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\Bias}{\mathrm{Bias}}
+
+% Some useful macros
+\input{./macros.tex}
+
+\begin{document}
+
+\maketitle
+
+\pagebreak
+
+% Problem 1
+\begin{homeworkProblem}
+The proof of convergence of 1-step methods in Section 6.3 shows that the 
+global error goes to zero as $k\goto 0$.
+However, this bound may be totally useless in estimating the actual error
+for a practical calculation.
+
+For example, suppose we solve $u'=-10u$ with $u(0)=1$ up to time $T=10$, so
+the true solution is $u(T)=e^{-100} \approx 3.7\times 10^{-44}$.
+Using forward Euler with a time step $k=0.01$,  
+the computed solution is $U^N = (.9)^{1000}\approx 1.75 \times
+10^{-46}$, and so $E^N \approx 3.7 \times 10^{-44}$.
+Since $L=10$ for this problem, the error bound (6.16) gives
+\begin{equation}\label{eq:1}
+\|E^N\| \leq e^{100}\cdot 10 \cdot \|\tau \|_\infty \approx 2.7 \times
+10^{44} \|\tau\|_\infty.
+\end{equation} 
+Here $\|\tau\|_\infty =|\tau^0| \approx 50 k$, so this upper bound on the
+error does go to zero as $k\goto 0$, but obviously it is not a realistic
+estimate of the error. It is too large by a factor of about $10^{88}$.
+
+The problem is that the estimate (6.16) is based on the Lipschitz
+constant $L=|\lambda|$, which gives a bound that grows exponentially in time
+even when the true and computed solutions are decaying exponentially.
+
+\begin{enumerate}
+\item Determine the computed solution and error bound (6.16) for the problem
+$u' = 10u$ with $u(0)=1$ up to time $T=10$.  {\em Correction: Ignore the
+following statement, since it's not correct...}  Note that the error bound is
+the same as in the case above, but now it is a reasonable estimate of the
+actual error.
+
+\item A more realistic error bound for the case where $\lambda<0$ can be
+obtained by rewriting (6.17) as
+\[
+\unp = \Phi(U^n)
+\]
+and then determining the Lipschitz constant for the function $\Phi$.
+Call this constant $M$.  Prove that if $M\leq 1$  and $E^0=0$ then
+\[
+|E^n| \leq  T\|\tau\|_\infty
+\]
+for $nk\leq T$, a bound that is similar to (6.16) but without the
+exponential term.
+
+
+\item Show that for forward Euler applied to $u'=\lambda
+u$ we can take $M = |1+k\lambda|$.  Determine $M$ for the case $\lambda =
+-10$ and $k=0.01$ and use this in the bound from part (b).
+Note that this is much better than the bound \eqn{eq:1}.
+{\em But note that it's still not a very sharp bound.}
+
+\end{enumerate}
+    
+    \vskip 1cm
+    \textbf{Solution:} \\
+    
+    \begin{enumerate}
+    
+    % Part a
+    \item We have 
+    $$ \tau^n = \half ku''(t_n) = \half k(100u) =50ke^{10t_n} $$
+    so 
+    $$\|\tau\|_{\infty} = \half e^{100}.$$
+    
+    The solution computed by Forward Euler will be 
+    \begin{align*}
+        U^{n+1} &= U^n + k(10U^n) \\
+         &= (1 + 10k)U^n \\
+         &= 1.1U^n \\
+         \Rightarrow U^{n} = (1.1)^n. 
+    \end{align*}
+    For $n=1000$ this gives $U^n = (1.1)^{1000} ~ \approx ~ 2.47 \times 10^{41}$. At $t=10$, the exact solution is
+    $u(10) = e^{100} ~\approx ~2.69 \times 10^{43}$ which implies the absolute error in our approximation is 
+    $\approx ~ 2.66 \times 10^{43}.$ Since the Lipschitz constant for this problem is $L = |\lambda| = 10$ 
+    the error bound (\ref{eq:1}) gives 
+    $$ |E^n| \leq e^{Lt_n} \cdot 10 \cdot \|\tau \|_\infty = e^{100}\cdot 5 \cdot e^{100} \approx 3.6 \times 10^{87}. $$
+    
+    % Part b
+    \item
+    Suppose $M\leq1$ is a Lipschitz constant for $\Phi$ and $E^0 =0.$ Then since
+    $$ U^{n+1} = \Phi(U^n)$$
+    and
+    $$ u(t_{n+1}) = \Phi(u(t_n)) + k\tau^n, $$
+    we have
+    \begin{align*}
+          E^{n+1} &= \Phi(U^n) - \Phi(u(t_n)) - k\tau^n \\
+          \Rightarrow |E^{n+1}| &\leq |\Phi(U^n) - \Phi(u(t_n))| + |k\tau^n| \\
+          &\leq M|E^n| + |k\tau^n| \\
+          &= M|\Phi(U^{n-1}) - \Phi(u(t_{n-1})) - k\tau^{n-1}| + k|\tau^n| \\
+          &\vdots \\
+          \Rightarrow |E^n| &\leq M^n|E^0| + k \sum^{n}_{m=1}M^{n-m}|\tau^{m-1}| \\
+          &= k \sum^{n}_{m=1}M^{n-m}|\tau^{m-1}| ~\leq k \sum^{n}_{m=1}|\tau^{m-1}| \\
+          &\leq k \sum^{n}_{m=1}\|\tau\|_\infty ~\leq nk\|\tau\|_\infty \\
+          &\leq T\|\tau\|_\infty
+    \end{align*}
+    for $nk\leq T$.
+    
+    % Part c
+    \item
+    The Forward Euler method for this problem is given by
+    $$ U^{n+1} = U^n + k\Psi(U^n,t_n,k)$$
+    where $\Psi(U^n,t_n,k) = f(U^n) = \lambda U^n.$ Hence
+    $$ \Phi(U^n,t_n,k) = U^n + k\lambda U^n = U^n(1+k\lambda).$$
+    Then for any $U^*$ we have
+    \begin{align*}
+        |\Phi(U^n,t_n,k) - \Phi(U^*,t_n,k)| &= |(1+k\lambda)U^n - (1+k\lambda)U^*| \\
+        &\leq |1+k\lambda||U^n - U^*|
+    \end{align*}
+    so we can take $M = |1+k\lambda|$ as a Lipschitz constant for $\Phi.$ When $\lambda=-10$ and 
+    $k=0.01$, $M=|1 - 0.1|=0.9$ Using the error bound from (b) (and observing that $E^0=0$ and $M<1$), this tells us that 
+    $$ |E^n| \leq T\|\tau \|_\infty = 10\cdot \half e^{100} = 5e^{100} \approx 1.34\times10^{44}.$$
+    
+    \end{enumerate}
+  
+  
+  
+\end{homeworkProblem}
+
+\pagebreak
+
+% Problem 2
+\begin{homeworkProblem}
+   Which of the following Linear Multistep Methods are convergent?  For 
+the ones that are not, are they inconsistent, or not zero-stable, or both?
+ \begin{enumerate}
+ \item $U^{n+2} = \half U^{n+1} + \half U^{n} + 2kf(U^{n+1})$
+ \item $\unp = U^n$ 
+ \item $U^{n+4} = U^{n} + \frac 4 3 k(f(U^{n+3})+f(U^{n+2})+f(U^{n+1}))$
+ \item $U^{n+3} = -U^{n+2} + U^{n+1} +U^{n}+2k(f(U^{n+2})+f(U^{n+1}))$.
+ \end{enumerate}
+    
+    \vskip 1cm
+    \textbf{Solution:} \\
+    A linear multistep method is zero-stable if its characteristic polynomial $\rho(\zeta)$ satisfies the root condition,
+    is consistent if and only if $\rho(1)=0$ and $\rho '(1) = \sigma(1)$, where $\sigma(\zeta)$ is the other
+    characteristic polynomial of the method, and is convergent if and only if it is both zero-stable and consistent.
+    
+    \begin{enumerate}
+    
+    % Part a
+    \item 
+        For this method
+        \begin{align*}
+            \rho(\zeta) &= \zeta^2 - \half \zeta - \half = (\zeta -1)(\zeta +\half ), \\
+            \sigma(\zeta) &= 2\zeta.
+        \end{align*}
+        Then $\rho(1) = 0$ and $\rho ' (1) = 2(1) - \half = \frac{3}{2} \neq 2 = \sigma(1),$ so the method is
+        inconsistent.
+        However, the roots of $\rho$ are $-\half$ and $1$ so it is zero-stable. Overall the method is not convergent 
+        since it is inconsistent.
+    
+    % Part b
+    \item
+        Here we have
+        \begin{align*}
+            \rho(\zeta) &= \zeta-1 \\
+            \sigma(\zeta) &= 0.
+        \end{align*}
+        Hence $\rho(1) = 0$, but $\rho '(1) = 1 \neq 0 = \sigma(1)$ so the method is inconsistent. The only root of
+        $\rho$ is $1$ so the root condition is satisfied and the method is zero-stable. In conclusion the method is 
+        not convergent since it is inconsistent.
+        
+    % Part c
+    \item
+        In this case
+        \begin{align*}
+            \rho(\zeta) &= \zeta^4 - 1 = (\zeta^2 -1)(\zeta^2 +1), \\
+            \sigma(\zeta) &= \frac{4}{3}(\zeta^3 + \zeta^2 + \zeta).
+        \end{align*}
+        $\rho(1) = 0$ and $\rho '(1) = 4(1)^3= 3\cdot \frac{4}{3} = \sigma(1)$ so the method is consistent. The roots of
+        $\rho,~ \pm 1, \pm i$ satisfy the root condition, so the method is stable is well. Therefore this linear multistep
+        method is convergent.
+        
+    % Part d
+    \item
+        This method has
+        \begin{align*}
+            \rho(\zeta) &= \zeta^3 + \zeta^2 - \zeta - 1 = (\zeta^2-1)(\zeta +1), \\
+            \sigma(\zeta) &= 2\zeta^2 + 2\zeta.
+        \end{align*}
+        We have $\rho(1)=0$ and $\rho '(1) = 3(1)^2 + 2(1) - 1 = 4 = 2+2 = \sigma(1)$ so this method is consistent.
+        However it is not zero-stable as $1$ is a double root which lies on the unit circle. Hence it is not convergent.
+    \end{enumerate}
+    
+\end{homeworkProblem}
+
+\pagebreak
+
+% Problem 3
+\begin{homeworkProblem}
+    \begin{enumerate}
+\item Determine the general solution to the linear difference equation
+$2U^{n+3} - 5U^{n+2} + 4U^{n+1} - U^n = 0$.
+
+{\bf Hint:} One root of the characteristic polynomial is at $\zeta=1$.
+
+\item Determine the solution to this difference equation with the starting
+values $U^0=11$, $U^1=5$, and $U^2=1$.  What is $U^{10}$?
+
+\item Consider the LMM
+\[
+2U^{n+3} - 5U^{n+2} + 4U^{n+1} - U^n = k(\beta_0 f(U^n) + \beta_1 f(U^{n+1})).
+\]
+For what values of $\beta_0$ and $\beta_1$ is local truncation error
+$\bigo(k^2)$?
+
+\item Suppose you use the values of $\beta_0$ and $\beta_1$ just determined
+in this LMM.  Is this a convergent method?
+
+\end{enumerate} 
+
+    \vskip 1cm
+    \textbf{Solution:} \\
+    
+    \begin{enumerate}
+    
+    % Part a
+    \item 
+        This linear difference equation has the following characteristic polynomial,
+        $$ \rho(\zeta) = 2\zeta^3 - 5\zeta^2+4\zeta-1 =(\zeta-1)(2\zeta^2-3\zeta+1)= (\zeta-1)^2(2\zeta-1). $$
+        We have a repeated root so the general solution is of the form
+        \begin{equation}\label{eq:2}
+            U^n = c_1 + nc_2 + (\half)^nc_3.
+        \end{equation}
+    
+    % Part b
+    \item
+        The initial data $U^0=11$, $U^1=5$, and $U^2=1$ gives us a system of equations which we may solve to determine
+        $c_1, ~c_2$, and $c_3.$ Substituting the known values for $U^0,~U^1,$ and $U^2$ into (\ref{eq:2}), we get
+        \begin{align*}
+            c_1 &+ c_2 &+ c_3 &= 11 \\
+            c_1 &+ c_2 &+ \half c_3 &=5 \\
+            c_1 &+ 2c_2 &+ \frac{1}{4}c_3 &=1
+        \end{align*}
+        $$\Rightarrow c_1=3,c_2=-2,c_3=8.$$
+        Thus the particular solution is given by
+        \begin{align*}
+            U^n &= 3 -2n + 8(\half)^n = 3 - 2n + 2^{3-n} \\
+            \Rightarrow U^{10} &= 3 - 2(10) + 2^{-7} = \frac{1}{128} - 17.
+        \end{align*}
+        
+    \pagebreak
+        
+    % Part c 
+    \item   
+        In order to construct a method which has $O(k^2)$ local truncation error, we need to force the $O(1)$ and $O(k)$
+        terms of the local truncation error to vanish (the expansion is given in Section (5.9.1)). Note, the $O(k^{-1})$
+        them is determined by the coefficients on the $U^j$ terms. Since $\rho(1) = 2-5+4-1=0$ this term is already
+        taken care of. The $O(1)$ term is 
+        $$u'(t_n)\sum^3_{j=0} (j\alpha_j-\beta_j),$$
+        where $\alpha_j$ is the coefficient on $U^{n+j}$. Forcing this term to vanish is equivalent to enforcing
+        $$ \beta_0 + \beta_1 = 4-(2\cdot5) + 6 = 0.$$
+        The $O(k)$ term is
+        $$ u''(t_n)\sum^3_{j=0}(\half j^2\alpha_j - j\beta_j).$$
+        Setting this equal to $0$ gives the condition
+        $$\beta_1 = 1.$$
+        Solving these two equations yields $\beta_0 = -1, ~\beta_1=1$;
+    
+    % Part d
+    \item
+        In (a) we saw $\rho(\zeta) = (\zeta-1)^2(2\zeta-1)$ which has a double root of 1, which lies on the unit circle. 
+        The root condition is not satisfied so the method is not zero-stable. This can also be seen from the general
+        solution derived in (b). Thus the method is not convergent (although it is consistent).
+    
+    \end{enumerate}
+    
+
+\end{homeworkProblem}
+
+
+% Problem 4
+\begin{homeworkProblem}
+    Consider the midpoint method $\unp = \unm + 2kf(U^n)$ applied to the test
+problem $u' = \lambda u$.  The method is zero-stable and second order
+accurate, and hence convergent.  If $\lambda<0$ then the true solution
+is exponentially decaying.
+
+On the other hand, for $\lambda<0$ and $k>0$ the point $z=k\lambda$ is never
+in the region of absolute stability of this method (see Example 7.7),
+and hence it seems that the numerical solution should be growing
+exponentially for any nonzero time step.  (And yet it converges to
+a function that is exponentially decaying.)
+
+\begin{enumerate} 
+\item
+Suppose we take $U^0=\eta$, use Forward Euler to generate $U^1$, and then
+use the midpoint method for $n=2,~3,~\ldots$.  Work out the exact solution
+$U^n$ by solving the linear difference equation and explain how the apparent
+paradox described above is resolved.
+
+\item Devise some numerical experiments to illustrate the resolution of the
+paradox.
+\end{enumerate}
+
+    \vspace{1cm}
+    \textbf{Solution:} \\ 
+    
+    \begin{enumerate}
+    
+    % Part a
+    \item 
+        When applied to the test problem $u'=\lambda u$ the midpoint method can be written
+        $$U^{n+1} = U^{n-1} + 2k\lambda U^n \Rightarrow U^{n+2} - 2k\lambda U^{n+1} - U^n = 0.$$
+        The characteristic polynomial is then
+        $$\rho(\zeta) = \zeta^2 - 2k\lambda\zeta - 1$$
+        which has the following roots
+        $$\zeta_{1,2} = k\lambda \pm \sqrt{(k\lambda)^2+1}.$$
+        If we use one iteration of Forward Euler to obtain $U^1$ with an (exact) initial guess of $U^0=\eta$, then
+        $$U^1 = \eta + k\lambda \eta = \eta(1+k\lambda).$$
+        The general solution of the midpoint method is
+        $$U^n = c_1(\zeta_1)^n + c_2(\zeta_2)^n,$$
+        so we can determine $c_1$ and $c_2$ using the particular values of $U^0$ and $U^1$ we are working with. To this end,
+        \begin{align*}
+            U^0 &= \eta = c_1 + c_2 \\
+            &\Rightarrow c_1 = \eta-c_2 \\
+            U^1 &= (k\lambda + \sqrt{(k\lambda)^2+1})c_1 + (k\lambda - \sqrt{(k\lambda)^2+1})c_2 \\
+            &\vdots\\
+            &\Rightarrow c_1 = \frac{\eta}{2}\cdot \frac{1+\sqrt{1+(k\lambda)^2}}{\sqrt{1+(k\lambda)^2}}, 
+            ~c_2 = \frac{\eta}{2}\cdot \frac{-1+\sqrt{1+(k\lambda)^2}}{\sqrt{1+(k\lambda)^2}}.
+        \end{align*}
+        
+        Thus
+            \[
+            U^n = \frac{\eta}{2}\cdot \frac{1+\sqrt{1+(k\lambda)^2}}{\sqrt{1+(k\lambda)^2}}\cdot 
+             (k\lambda + \sqrt{(k\lambda)^2+1})^n + 
+            \frac{\eta}{2}\cdot \frac{-1+\sqrt{1+(k\lambda)^2}}{\sqrt{1+(k\lambda)^2}} \cdot
+            (k\lambda - \sqrt{(k\lambda)^2+1})^n.
+            \]
+        If $\lambda<0$ and $k>0$ then second root satisfies,
+        $|\zeta_2 = k\lambda - \sqrt{(k\lambda)^2+1}| > 1.$ Normally this would indicate that the method should be
+        unstable on the problem at
+        hand, since $\zeta_2$ is exponentiated at each iteration. However further analysis reveals that for $k$ small enough,
+        this is not the case. First observe that $c_2$ is $O(k^2)$ for $k$ small since
+        \begin{align*}
+            c_2 &= \frac{\eta}{2}\cdot \frac{-1+\sqrt{1+(k\lambda)^2}}{\sqrt{1+(k\lambda)^2}} = \frac{\eta}{2}\cdot 
+            \frac{-1 + (1 + \half(k\lambda)^2 + O((k\lambda)^4)}{\sqrt{1+(k\lambda)^2}} \\
+            &= \frac{\eta}{2}\cdot \frac{\half(k\lambda)^2 + O((k\lambda)^4}{\sqrt{1+(k\lambda)^2}} =  
+            \frac{\eta}{2}\cdot(\half(k\lambda)^2 + O((k\lambda)^4) \cdot (1 - \half(k\lambda)^2 + O((k\lambda)^4)) \\
+            &= O(k^2),
+        \end{align*}
+        where we have used the Taylor expansions for $(1+x^2)^\half$ and $(1+x^2)^{-\half}$ for small $|x|.$
+        Now we turn our attention to the root $\zeta_2.$ Suppose we are interested in computing an approximation to the test
+        problem at a fixed time $T = nk.$ Again making use of a Taylor expansion, we have
+        \begin{align*}
+            \zeta_2 &= k\lambda - \sqrt{1+(k\lambda)^2} = k\lambda - (1 + \half(k\lambda)^2 + O((k\lambda)^2) \\
+            &= -1 + k\lambda + O(k^2) \\
+            &\Rightarrow \zeta_2^n = (-1+k\lambda + O(k^2))^n \\
+            &=(-1)^n(1 + |\lambda|k + O(k^2))^n \\
+            &=(-1)^n(1+ \frac{|\lambda|T}{n} + O(k^2))^n \approx (-1)^n(1+ \frac{|\lambda|T}{n})^n.
+        \end{align*}
+        As $k\goto0,$ since $T=kn$ is fixed, $n\goto\infty$ and $(-1)^n(1+ \frac{|\lambda|T}{n})^n \approx (-1)^ne^{|\lambda|T}.$
+        This implies that $\zeta_2^n$ is bounded as $n$ gets large and $k$ small. Since $c_2=O(k^2)$, for small $k$
+        (and large $n$), we have
+        \begin{align*}
+            c_2\zeta_2^n &=  \frac{\eta}{2}\cdot \frac{-1+\sqrt{1+(k\lambda)^2}}{\sqrt{1+(k\lambda)^2}}\cdot 
+            (k\lambda - \sqrt{1+(k\lambda)^2})^n
+             = O(k^2) \cdot (k\lambda - \sqrt{1+(k\lambda)^2})^n \\
+             &\approx O(k^2)e^{|\lambda|T} = O(k^2).
+        \end{align*}
+        Hence the term which had the potential to disrupt our approximation by blowing up is actually very small for small $k$.
+        The other root is less than $1$ in modulus, so it causes no instability, so the midpoint method works on the test problem.
+    % Part b
+    \item
+        See the attached Juliabox notebook.
+    
+    \end{enumerate}
+   
+    
+\end{homeworkProblem}
+
+
+% Problem 5
+\begin{homeworkProblem}
+    Perform numerical experiments to confirm the claim made in Example 7.10.
+    
+    \vspace{1cm}
+    \textbf{Solution:}\\
+    See the attached Juliabox notebook.
+    
+\end{homeworkProblem}
+
+
+
+\end{document}
+

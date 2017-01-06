@@ -1,0 +1,536 @@
+\documentclass{article}
+
+\usepackage{fancyhdr}
+\usepackage{extramarks}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{caption,subcaption}
+\usepackage{subfig}
+
+%
+% Basic Document Settings
+%
+
+\topmargin=-0.45in
+\evensidemargin=0in
+\oddsidemargin=0in
+\textwidth=6.5in
+\textheight=9.0in
+\headsep=0.25in
+
+\linespread{1.1}
+
+\pagestyle{fancy}
+\lhead{\hmwkAuthorName}
+\chead{\hmwkClass:\ \hmwkTitle}
+\rhead{\firstxmark}
+\lfoot{\lastxmark}
+\cfoot{\thepage}
+
+\renewcommand\headrulewidth{0.4pt}
+\renewcommand\footrulewidth{0.4pt}
+
+\setlength\parindent{0pt}
+
+%
+% Create Problem Sections
+%
+
+\newcommand{\enterProblemHeader}[1]{
+    \nobreak\extramarks{}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+    \nobreak\extramarks{Problem \arabic{#1} (continued)}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+}
+
+\newcommand{\exitProblemHeader}[1]{
+    \nobreak\extramarks{Problem \arabic{#1} (continued)}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+    \stepcounter{#1}
+    \nobreak\extramarks{Problem \arabic{#1}}{}\nobreak{}
+}
+
+\setcounter{secnumdepth}{0}
+\newcounter{partCounter}
+\newcounter{homeworkProblemCounter}
+\setcounter{homeworkProblemCounter}{1}
+\nobreak\extramarks{Problem \arabic{homeworkProblemCounter}}{}\nobreak{}
+
+%
+% Homework Problem Environment
+%
+% This environment takes an optional argument. When given, it will adjust the
+% problem counter. This is useful for when the problems given for your
+% assignment aren't sequential. See the last 3 problems of this template for an
+% example.
+%
+\newenvironment{homeworkProblem}[1][-1]{
+    \ifnum#1>0
+        \setcounter{homeworkProblemCounter}{#1}
+    \fi
+    \section{Problem \arabic{homeworkProblemCounter}}
+    \setcounter{partCounter}{1}
+    \enterProblemHeader{homeworkProblemCounter}
+}{
+    \exitProblemHeader{homeworkProblemCounter}
+}
+
+%
+% Homework Details
+%   - Title
+%   - Due date
+%   - Class
+%   - Section/Time
+%   - Instructor
+%   - Author
+%
+
+\newcommand{\hmwkTitle}{Homework 5}
+\newcommand{\hmwkDueDate}{May 26, 2015}
+\newcommand{\hmwkClass}{Amath 586}
+\newcommand{\hmwkAuthorName}{Brian de Silva}
+
+%
+% Title Page
+%
+
+\title{
+    \vspace{2in}
+    \textmd{\textbf{\hmwkClass:\ \hmwkTitle}}\\
+    \normalsize\vspace{0.1in}\small{Due\ on\ \hmwkDueDate\ }\\
+    \vspace{3in}
+}
+
+\author{\textbf{\hmwkAuthorName}}
+\date{}
+
+\renewcommand{\part}[1]{\textbf{\large Part \Alph{partCounter}}\stepcounter{partCounter}\\}
+
+%
+% Various Helper Commands
+%
+
+% Useful for algorithms
+\newcommand{\alg}[1]{\textsc{\bfseries \footnotesize #1}}
+
+% For derivatives
+\newcommand{\deriv}[1]{\frac{\mathrm{d}}{\mathrm{d}x} (#1)}
+
+% For partial derivatives
+\newcommand{\pd}[2]{\frac{\partial}{\partial #1} (#2)}
+
+\newcommand{\pdd}[2]{\frac{\partial #1}{\partial #2}}
+
+% Integral dx
+\newcommand{\dx}{\mathrm{d}x}
+
+% Alias for the Solution section header
+\newcommand{\solution}{\textbf{\large Solution}}
+
+% Probability commands: Expectation, Variance, Covariance, Bias
+\newcommand{\E}{\mathrm{E}}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\Bias}{\mathrm{Bias}}
+
+% Some useful macros
+\input{./macros.tex}
+
+\begin{document}
+
+\maketitle
+
+\pagebreak
+
+% Problem 1
+\begin{homeworkProblem}
+    Let $U = [U_0,~U_1,~\ldots,~U_m]^T$ be a vector of function values at
+equally spaced points on the interval $0\leq x \leq 1$, and suppose the
+underlying function is periodic and smooth.  Then we can approximate 
+the first derivative $u_x$ at all of these points by $DU$, where $D$ is
+circulant matrix such as
+\[
+D_- = \frac 1 h \brm 1&&&&-1\\ -1&1\\ &-1&1\\ &&-1&1\\ &&&-1&1\erm,  \qquad
+D_+ = \frac 1 h \brm -1&1\\ &-1&1\\ &&-1&1\\ &&&-1&1\\ 1&&&&-1\erm
+\]
+for first-order accurate one-sided approximations or
+\[
+D_0 = \frac 1 {2h} \brm 0&1&&&-1\\ -1&0&1\\ &-1&0&1\\ &&-1&0&1\\ 1&&&-1&0\erm
+\]
+for a second-order accurate centered approximation.  (These are illustrated
+for a grid with $m+1=5$ unknowns and $h=1/5$.)
+
+
+The advection equation $u_t + au_x=0$ on the interval $0\leq x \leq
+1$ with periodic boundary conditions  
+gives rise to the MOL discretization $U'(t) = -aDU(t)$
+where $D$ is one of the matrices above.
+
+\begin{enumerate} 
+\item Discretizing $U' = -aD_-U$ by forward Euler gives the first order
+upwind method
+\[
+U_j^{n+1} = U_j^n - \frac{ak}{h} (U_j^n - U_{j-1}^n),
+\]
+where the index $i$ runs from 0 to $m$ with addition of indices performed
+mod $m+1$ to incorporate the periodic boundary conditions.
+
+Suppose instead we discretize the MOL equation by the second-order Taylor
+series method, 
+\[
+U^{n+1} = U^n - akD_-U^n + \half (ak)^2 D_-^2 U^n.
+\]
+Compute $D_-^2$ and also write out the formula for $U_j^n$ that results from
+this method.  
+
+\item How accurate is the method derived in part (a) compared to the
+Beam-Warming method, which is also a 3-point one-sided method?
+
+\item Suppose we make the method more symmetric:
+\[
+U^{n+1} = U^n - \frac{ak}{2} (D_+ +D_-)U^n + \half (ak)^2 D_+D_- U^n.
+\]
+Write out the formula for $U_j^n$ that results from this method.  
+What standard method is this?
+
+\end{enumerate}
+    
+    
+    \vskip 1cm
+    \textbf{Solution:} \\
+    
+    \begin{enumerate}
+    
+    % Part (a)
+    \item $D^2_-$ is easily computed:
+    \begin{equation*}
+    D^2_- = \frac{1}{h^2} \brm 1&& & & & 1&-2\\
+                                -2&1& & & & & 1 \\
+                                1&-2&1&\\
+                                &1&-2&1&\\
+                                &&\ddots&\ddots&\ddots&\\
+                                &&&1&-2&1&\\
+                                &&&&1&-2&1
+                                \erm .
+    \end{equation*}
+    The formula that results from this method is given by
+    \begin{equation*}
+    U_j^{n+1} =U_j^n - \frac{ak}{h}\left(U^n_j-U^n_{j-1}\right) + \half \left(\frac{ak}{h}\right)^2\left( U_j^n-2U_{j-1}^n+U_{j-2}\right),
+    \quad j=1,2,\dots
+    \end{equation*}
+    where we identify $U_0^n$ with $U_{m+1}^n$ and $U_{-1}^n$ with $U_{m}^n$  because of the periodic boundary conditions.
+    
+    % Part (b)
+    \item This method is only $O(k^2 + h)$ as it uses a second order discretization in time and a first order one in space, whereas
+    the Beam-Warming method is $O(k^2+h^2)$ accurate. This method is the worse of the two 3-point one-sided methods.
+    
+    % Part (c)
+    \item The formula that results from making this method symmetric is
+    \begin{equation*}
+    U^{n+1}_j = U^n_j - \frac{ak}{2h}\left(U^n_{j+1} - U^n_{j-1} \right) +
+    \half \left(\frac{ak}{h}\right)^2\left(U^n_{j-1}-2U^n_j+U^n_{j+1}\right),
+    \end{equation*}
+    which is just the Lax-Wendroff method.
+    
+    
+    \end{enumerate}
+
+\end{homeworkProblem}
+
+
+% Problem 2
+\begin{homeworkProblem}
+    \begin{enumerate} 
+\item
+Produce a plot similar to those shown in Figure 10.1 for the upwind method
+(10.21) with the same values of $a=1$, $h=1/50$ and $k=0.8h$
+used in that figure.
+
+\item Produce the corresponding plot if the one-sided method (10.22) is
+instead used with the same values of $a,~h$, and $k$.
+\end{enumerate}
+    
+    
+    \vskip 1cm
+    \textbf{Solution:} \\
+    
+    \begin{figure}
+    \centering
+    \includegraphics[width=.65\textwidth]{2a}
+    \caption{Eigenvalues of $A_{\epsilon}$ with $\epsilon = \frac{ah}{2}$} 
+    \label{fig:2a}
+    \end{figure}
+    
+    \begin{figure}
+    \centering
+    \includegraphics[width=.65\textwidth]{2b}
+    \caption{Eigenvalues of $A_{\epsilon}$ with $\epsilon = -\frac{ah}{2}$}
+    \label{fig:2b}
+    \end{figure}
+    
+    \begin{enumerate}
+    
+    % Part (a)
+    \item Using the upwind method and the same values of $a=1$, $h=1/50$ and $k=0.8h$ as in Figure 10.1 we produce the plot 
+    shown in Figure \ref{fig:2a}.
+    
+    
+    % Part (b)
+    \item Method (10.22) and the same values as above produces the plot shown in Figure \ref{fig:2b}.
+    
+    \end{enumerate}
+    
+    See the appendix for the Matlab code that generated these plots.
+    
+\end{homeworkProblem}
+
+\pagebreak
+
+% Problem 3
+\begin{homeworkProblem}
+    Suppose $a>0$ and consider the following {\it skewed leapfrog} method for
+solving the advection equation $u_t + au_x = 0$:
+\[
+U_j^{n+1} = U_{j-2}^{n-1}  - \left(\frac{ak}{h} - 1\right) (U_j^n -
+U_{j-2}^n).
+\]
+The stencil of this method is
+\vskip 5pt
+\hfil\includegraphics[width=1.5in]{skewedlfstencil.png}\hfil
+\vskip 5pt
+
+Note that if $ak/h \approx 1$ then this stencil roughly follows the
+characteristic of the advection equation and might be expected to be more
+accurate than standard leapfrog.  (If $ak/h = 1$ the method is exact.)
+
+
+\begin{enumerate}
+
+\item What is the order of accuracy of this method?
+
+\item For what range of Courant number $ak/h$ does this method satisfy the
+CFL condition?
+
+\item Show that the method is in fact stable for this range of Courant
+numbers by doing von Neumann analysis.  
+{\bf Hint:} Let $\gamma(\xi) = e^{i\xi h}g(\xi)$ and show that $\gamma$
+satisfies a quadratic equation closely related to the equation (10.34)
+that arises from a von Neumann analysis of the leapfrog method.
+
+\end{enumerate}
+    
+    \vskip 1cm
+    \textbf{Solution:} \\
+    
+    \begin{enumerate}
+    
+    % Part (a)
+    \item We need the following Taylor expansions to compute the truncation error for this method:
+    \begin{align*}
+    u(x,t+k) &= u + ku_t+\frac{k^2}{2}u_{tt} + \frac{k^3}{3!}u_{ttt} + O(k^4), \\
+    u(x-2h,t) &= u-2hu_x+2h^2u_{xx}-\frac{4}{3}h^3u_{xxx}+O(h^4), \\
+    u(x-2h,t-k) &= u-2hu_x-ku_t+\half(4h^2u_{xx}+k^2u_{tt}+4khu_{xt})\\
+    &-\frac{1}{6}(8h^3u_{xxx}+k^3u_{ttt}+6hk^2u_{xtt}+12h^2ku_{xxt})+\dots .
+    \end{align*}
+    
+    Rewriting the method, we obtain an expression for the truncation error:
+    \begin{equation*}
+    \tau^n=\frac{U^{n+1}_j - U^{n-1}_{j-2}}{k} + \frac{1}{k}\left(\frac{ak}{h}-1\right)(U^n_j-U^n_{j-2}).
+    \end{equation*}
+    
+    Substituting in the above Taylor expansions, cancelling terms, and using the PDE to simplify the resulting equation further, we get
+    \begin{equation*}
+    \tau^n = \frac{k^2}{3}u_{ttt}+hku_{ttx}+2h^2u{xxt}+\frac{4}{3}ah^2u_{xxx} +\dots = O((h+k)^2).
+    \end{equation*}
+    
+    Hence the method is second order accurate in both space and time. (Note: although I did above the calculations by hand, 
+    I checked my answer using a Mathematica notebook which can be found in the Appendix).
+    
+    % Part (b)
+    \item Using the skewed leapfrog formula, we can trace the dependence of an approximation $U^n_j$ back to the points
+    $U^0_{j-2n}, U^0_{j-2(n-1)}, \dots, U^0_j$. Fixing $\frac{k}{h}=r$ we find that as we refine the grid, the numerical domain of
+    dependence for a point $(X,T)$ corresponding to $U^n_j$ converges to $[X-2T/r,X]$. For $a>0$ the domain of dependence of the PDE
+    at $(X,T)$ is $\{X-aT\}$. Hence in order for the method to satisfy the CFL condition, we need that
+    $X-2T/r \leq X-aT \leq X$. For $a>0$ this means that we must have $ar\leq2 ~\Rightarrow ~ 0\leq \frac{ak}{h}\leq 2$.
+    
+    % Part (c)
+    \item Let $\nu=\frac{ak}{h}$, the Courant number. Setting $U^n_j = g(\xi)^ne^{ijh\xi}$ in the skewed leapfrog method yields
+    \begin{equation*}
+    g(\xi)^{n+1}e^{ijh\xi} =g(\xi)^{n-1}e^{i(j-2)h\xi} - g(\xi)^{n}\left(\nu-1\right)\left(e^{ijh\xi}-e^{i(j-2)h\xi} \right).
+    \end{equation*}
+    Dividing by $g(\xi)^{n-1}e^{i(j-2)h\xi}$ gives
+    \begin{equation*}
+    g(\xi)^2e^{2ih\xi} = 1 - g(\xi)\left(\nu-1\right)\left(e^{2ih\xi}-1\right).
+    \end{equation*}
+    Finally, setting $\gamma(\xi)=g(\xi)e^{ijh\xi}$ in the above, we have
+    \begin{align*}
+    \gamma(\xi)^2 &= 1 - \gamma(\xi)\left(\nu-1\right)\left(e^{ih\xi}-e^{-ih\xi}\right) \\
+    \Rightarrow \gamma(\xi)^2 &= 1-2i(\nu-1)sin(h\xi)\gamma(\xi).
+    \end{align*}
+    Applying the same analysis as in Example 10.4, we see that in order for the method to be stable 
+    (i.e. $|\gamma(\xi)|=|g(\xi)e^{ijh\xi}| = |g(\xi)| \leq 1$), we require $|\nu-1|\leq 1 ~\Rightarrow~ 0\leq \nu \leq 2$, the same
+    restriction that the CFL condition imposes. Therefore the method is stable for the range of Courant numbers satisfying the CFL
+    condition.
+    
+    
+    \end{enumerate}
+    
+\end{homeworkProblem}
+
+
+% Problem 4
+\begin{homeworkProblem}
+    Derive the modified equation (10.45) for the Lax-Wendroff method.
+    
+    \vskip 1cm
+    \textbf{Solution:} \\
+    
+    The Lax-Wendroff method is given by
+    \begin{equation*}
+    U^{n+1}_j = U^n_j - \frac{ak}{2h}(U^n_{j+1}-U^n_{j-1}) + \frac{a^2k^2}{2h^2}(U^n_{j-1}-2U^n_j+U^n_{j+1}).
+    \end{equation*}
+    Supposing that $v(x,t)$ satisfies this difference equation exactly, we substitute it into the equation, Taylor expand about $(x,t)$, and
+    simplify to get
+    \begin{equation*}
+    \left(kv_t+\frac{k^2}{2}v_{tt}+\frac{k^3}{6}v_{ttt} + \frac{k^4}{4!}v_{4t} + O(k^5)\right) + 
+    ak\left(v_x+\frac{h^2}{3!}v_{xxx}+O(h^4)\right) -\frac{a^2k^2}{2}\left(v_{xx}+\frac{h^2}{12}v_{4x}+O(h^4)\right)=0.
+    \end{equation*}
+    
+    This can be rewritten as 
+    \begin{equation}\label{eq:4a}
+    v_t+av_x = \frac{k}{2}\left(a^2v_{xx}-v_{tt}\right) - \frac{1}{6}\left(k^2v_{ttt}+ah^2v_{xxx}\right)+O(k^3+h^3+h^2k).
+    \end{equation}
+    
+    Dropping higher order terms and differentiating with respect to $x$ and $t$ gives
+    \begin{align*}
+    v_{tx}&= -av_{xx} + \frac{k}{2}\left(a^2v_{xxx}-v_{ttx}\right) - \frac{1}{6}\left(k^2v_{tttx}+ah^2v_{4x}\right), \\
+    v_{tt}&= -av_{xt} + \frac{k}{2}\left(a^2v_{xxt}-v_{ttt}\right) - \frac{1}{6}\left(k^2v_{4t}+ah^2v_{xxxt}\right).
+    \end{align*}
+    
+    Combining these, we obtain
+    \begin{equation*}
+    v_{tt} = a^2v_{xx} - \frac{ak}{2}\left(a^2v_{xxx}-v_{ttx}\right) + \frac{k}{2}\left(a^2v_{xxt}-v_{ttt}\right) + O(k^2 + h^2).
+    \end{equation*}
+    
+    Substituting this into (\ref{eq:4a}) and ignoring higher order terms yields
+    \begin{equation*}
+    v_t+av_x = \frac{k^2}{4}\left(a^2v_{xxt}-v_{ttt}-a^3v_{xxx}+av_{ttx} \right) - \frac{1}{6}\left(k^2v_{ttt}+ah^2v_{xxx}\right).
+    \end{equation*}
+    
+    Differentiating earlier equations with respect to $x$ and $t$ once more gives
+    \begin{align*}
+    v_{txx} &= -av_{xxx} + O(k), \\
+    v_{ttx} &= a^2v_{xxx}+O(k), \\
+    v_{ttt} &= a^2v_{xxt} + O(k) = -a^3(v_{xxx})+O(k).
+    \end{align*}
+    
+    Finally, substituting these into the above and ignoring higher order terms yields
+    
+    \begin{align*}
+    v_t + av_x&=\frac{k^2}{4}\left(a^2v_{xxt} - (a^2v_{xxt}) - a^3v_{xxx} + a(a^2v_{xxx}) \right)
+    -\frac{1}{6}\left( k^2(-a^3v_{xxx})+ah^2v_{xxx} \right) \\
+    &= -\frac{ah^2}{6}\left( 1-\left(\frac{ak}{h}\right)^2 \right)v_{xxx}.
+    \end{align*}
+    
+    Hence we obtain the desired expression
+    \begin{equation*}
+    v_t + av_x +\frac{ah^2}{6}\left( 1-\left(\frac{ak}{h}\right)^2 \right)v_{xxx} =0.
+    \end{equation*}
+    
+    
+\end{homeworkProblem}
+
+
+
+% Problem 5
+\begin{homeworkProblem}
+    The m-file \verb+advection_LW_pbc.m+ from the book repository
+implements the Lax-Wendroff method for
+the advection equation on $0\leq x\leq 1$ with 
+periodic boundary conditions.
+
+The class repository contains a Python translation, \verb+$AM586/codes/advection_LW_pbc.py+.
+
+You might want to first experiment with these and see how Lax-Wendroff behaves for various grid resolutions.  Note that the way this problem is set up, the solution advects twice around the domain over time 1 and should end up agreeing with the initial data. 
+
+\begin{enumerate}
+\item Modify one of these files to 
+implement the leapfrog method and verify that this is second order accurate.
+Note that you will have to specify two levels of initial data.  For the
+convergence test set $U^1_j = u(x_j,k)$, the true solution at time $k$.
+
+\item Modify your code so that the initial data consists of
+a wave packet
+\[
+\eta(x) = \exp(-\beta(x-0.5)^2) \sin(\xi x)
+\]
+Work out the true solution $u(x,t)$ for this data.
+Using $\beta = 100$, $\xi=80$ and $U^1_j = u(x_j,k)$, test that your code
+still exhibits second order accuracy for $k$ and $h$ sufficiently small.
+
+\item Using $\beta = 100$, $\xi=150$ and $U^1_j = u(x_j,k)$, estimate the
+group velocity of the wave packet computed with leapfrog using $m=199$ and
+$k = 0.4h$.  How well does this compare with the  value (10.52) predicted by
+the modified equation?  
+
+{\bf Note:} Early editions of the text book had a typo in (10.52).  There should be a factor $\nu^2$ in the denominator.
+
+\end{enumerate}
+    
+    
+    \vskip 1cm
+    \textbf{Solution:} \\
+    
+    \begin{figure}
+    \centering
+    \includegraphics[width=.65\textwidth]{5aerr}
+    \caption{Error at $t=1$ using Leapfrog method}
+    \label{fig:5a}
+    \end{figure}
+    
+    \begin{figure}
+    \centering
+    \includegraphics[width=.65\textwidth]{5berr}
+    \caption{Error at $t=1$ using Leapfrog method with alternate initial conditions}
+    \label{fig:5b}
+    \end{figure}
+    
+    \begin{enumerate}
+    
+    % Part (a)
+    \item Figure (\ref{fig:5a}) shows the error at $t=1$ of the Leapfrog method as the grid is refined. The numerically approximated order of accuracy was
+    $1.99$ so the method is exhibiting second order accuracy.
+    
+    % Part (b)
+    \item For the simple advection equation the solution is simply $\eta(x-at)$ modified so that it is periodic with period 1. As shown in Figure 
+    (\ref{fig:5b}), the method is still second order accurate on this new initial data (approximate order of accuracy: 1.96). Notice however that 
+    the grid spacing had to be decreased in order
+    for the desired second order accuracy to become apparent. For larger values of $h$ and $k$ the method was not converging nearly as quickly.
+    
+    % Part (c)
+    \item Following the peak of the wave packet of the numerical solution, we can approximate its wave speed. We see that it travels a total distance of
+    1.752 over 1 unit of time, so the group velocity is roughly 1.75.
+    Equation (10.52) uses the modified equation to approximate the group velocity of the wave packet computed with leapfrog as 
+    \begin{equation*}
+    \pm \frac{acos(\xi h)}{\sqrt(1-\nu^2sin^2(\xi h))} \approx 1.746
+    \end{equation*}
+    using the given parameters $a=2, \nu=\frac{4}{5}, h=\frac{1}{200}, \xi =150.$ This agrees almost perfectly with the observed group velocity.
+    
+    \end{enumerate}
+    
+\end{homeworkProblem}
+        
+
+\pagebreak
+
+\hfill
+
+\pagebreak
+~~
+\vskip 10cm
+\centering
+\huge \textbf{Appendix: Code}
+
+
+\end{document}
+

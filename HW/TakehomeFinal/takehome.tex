@@ -1,0 +1,497 @@
+\documentclass{article}
+
+\usepackage{fancyhdr}
+\usepackage{extramarks}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{caption,subcaption}
+\usepackage{subfig}
+
+%
+% Basic Document Settings
+%
+
+\topmargin=-0.45in
+\evensidemargin=0in
+\oddsidemargin=0in
+\textwidth=6.5in
+\textheight=9.0in
+\headsep=0.25in
+
+\linespread{1.1}
+
+\pagestyle{fancy}
+\lhead{\hmwkAuthorName}
+\chead{\hmwkClass:\ \hmwkTitle}
+\rhead{\firstxmark}
+\lfoot{\lastxmark}
+\cfoot{\thepage}
+
+\renewcommand\headrulewidth{0.4pt}
+\renewcommand\footrulewidth{0.4pt}
+
+\setlength\parindent{0pt}
+
+%
+% Create Problem Sections
+%
+
+\newcommand{\enterProblemHeader}[1]{
+    \nobreak\extramarks{}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+    \nobreak\extramarks{Problem \arabic{#1} (continued)}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+}
+
+\newcommand{\exitProblemHeader}[1]{
+    \nobreak\extramarks{Problem \arabic{#1} (continued)}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+    \stepcounter{#1}
+    \nobreak\extramarks{Problem \arabic{#1}}{}\nobreak{}
+}
+
+\setcounter{secnumdepth}{0}
+\newcounter{partCounter}
+\newcounter{homeworkProblemCounter}
+\setcounter{homeworkProblemCounter}{1}
+\nobreak\extramarks{Problem \arabic{homeworkProblemCounter}}{}\nobreak{}
+
+%
+% Homework Problem Environment
+%
+% This environment takes an optional argument. When given, it will adjust the
+% problem counter. This is useful for when the problems given for your
+% assignment aren't sequential. See the last 3 problems of this template for an
+% example.
+%
+\newenvironment{homeworkProblem}[1][-1]{
+    \ifnum#1>0
+        \setcounter{homeworkProblemCounter}{#1}
+    \fi
+    \section{Problem \arabic{homeworkProblemCounter}}
+    \setcounter{partCounter}{1}
+    \enterProblemHeader{homeworkProblemCounter}
+}{
+    \exitProblemHeader{homeworkProblemCounter}
+}
+
+%
+% Homework Details
+%   - Title
+%   - Due date
+%   - Class
+%   - Section/Time
+%   - Instructor
+%   - Author
+%
+
+\newcommand{\hmwkTitle}{Take-home Final}
+\newcommand{\hmwkDueDate}{June 11, 2015}
+\newcommand{\hmwkClass}{Amath 586}
+\newcommand{\hmwkAuthorName}{Brian de Silva}
+
+%
+% Title Page
+%
+
+\title{
+    \vspace{2in}
+    \textmd{\textbf{\hmwkClass:\ \hmwkTitle}}\\
+    \normalsize\vspace{0.1in}\small{Due\ on\ \hmwkDueDate\ }\\
+    \vspace{3in}
+}
+
+\author{\textbf{\hmwkAuthorName}}
+\date{}
+
+\renewcommand{\part}[1]{\textbf{\large Part \Alph{partCounter}}\stepcounter{partCounter}\\}
+
+%
+% Various Helper Commands
+%
+
+% Useful for algorithms
+\newcommand{\alg}[1]{\textsc{\bfseries \footnotesize #1}}
+
+% For derivatives
+\newcommand{\deriv}[1]{\frac{\mathrm{d}}{\mathrm{d}x} (#1)}
+
+% For partial derivatives
+\newcommand{\pd}[2]{\frac{\partial}{\partial #1} (#2)}
+
+\newcommand{\pdd}[2]{\frac{\partial #1}{\partial #2}}
+
+% Integral dx
+\newcommand{\dx}{\mathrm{d}x}
+
+% Alias for the Solution section header
+\newcommand{\solution}{\textbf{\large Solution}}
+
+% Probability commands: Expectation, Variance, Covariance, Bias
+\newcommand{\E}{\mathrm{E}}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\Bias}{\mathrm{Bias}}
+
+% Some useful macros
+\input{./macros.tex}
+
+\begin{document}
+
+\maketitle
+
+\pagebreak
+
+% Problem 1
+\begin{homeworkProblem}
+    Consider the method
+\begin{equation} \label{a}
+U_j^{n+1} = U_j^n - \frac{ak}{2h}(U_j^n-U_{j-1}^n + U_j^{n+1}-U_{j-1}^{n+1}).
+\end{equation}
+for the advection equation $u_t+au_x=0$ on $0\leq x \leq 1$ with periodic
+boundary conditions, on a grid with spacing $h= 1 / (m+1)$ for some integer
+$m$.  
+
+\begin{enumerate}
+\item This method can be viewed as the trapezoidal method applied to an ODE
+system $U'(t) = AU(t)$ arising from a method of lines discretization of the
+advection equation.  What is the matrix $A$?  Don't forget the boundary
+conditions.
+
+\item Determine the eigenvalues of the matrix $A$.  {\bf Hint:} the
+eigenvectors are the same as for similar matrices you have seen.
+
+\item Suppose we want to fix the Courant number $ak/h$ as $k,~h\goto 0$.
+For what range of Courant numbers will the method be stable if $a>0$?
+If $a<0$?  Justify your answers in terms of eigenvalues of the matrix $A$
+and  the stability region of the trapezoidal method.
+
+\item For what range of $ak/h$ will the CFL condition be satisfied for this
+method (with periodic boundary conditions)?  Consider both $a>0$ and $a<0$.
+Is satisfying the CFL condition sufficient for stability in all cases?
+
+\end{enumerate}
+
+    
+    \vskip 1cm
+    \textbf{Solution:} \\
+    
+\begin{enumerate}
+
+% Part (a)
+\item Consider the following ODE system:
+\[
+U'(t) = -\frac{a}{2h}(U_j(t)-U_{j-1}(t)).
+\]
+If we apply the trapezoidal method to this system we obtain (\ref{a}). With periodic boundary conditions, this
+suggests that we can write this system as $U'(t) = AU(t)$ with $A$ given by
+\[
+A = -\frac{a}{h}\bcm 1&&&&&-1 \\ -1&1&&&& \\ &-1&1&&& \\ &&\ddots&\ddots&& \\ &&&-1&1& \\ &&&&-1&1 \ecm.
+\]
+
+% Part (b)
+\item It is easy to check that if $\textbf{u}^p = (e^{2\pi iph},e^{4\pi iph},\dots,e^{2(m+1)\pi iph})^T$ then
+\[
+A\textbf{u}^p = -\frac{a}{h}\left( \frac{e^{2\pi iph}-1}{e^{2\pi iph}} \right) \textbf{u}^p, \qquad p=1,2,\dots, m+1.
+\]
+Thus $\textbf{u}^p$ are the eigenvalues of $A$ with eigenvalues $\lambda_p = 
+-\frac{a}{h}\left(\frac{e^{2\pi iph}-1}{e^{2\pi iph}} \right),p=1,2,\dots,m+1$.
+We can rewrite this expression in what is perhaps a more convenient form:
+$$ \lambda_p = -\frac{a}{h}(1-e^{-2\pi iph})=-\frac{a}{h}(1-\text{cos}(2\pi ph)+i\text{sin}(2\pi ph)),\qquad p=1,2,\dots,m+1.$$
+
+% Part (c)
+\item Let $c=ak/h$, the Courant number. Recall that for the trapezoidal method the expression dictating stability
+is given by
+\[
+R(z) = \frac{1+\half z}{1-\half z}.
+\]
+For a fixed value of $k$ the method is stable in the above problem if $|R(k\lambda^p)|\leq 1$ for every 
+eigenvalue $\lambda^p$, and is unstable otherwise. Therefore we need $|1+\half k\lambda^p|\leq|1-\half k\lambda^p|$
+in order for the method to be stable. Substituting in our expression for $\lambda^p$ gives the following
+condition for stability:
+\begin{align*}
+~&~|1+c(1-\text{cos}(2 \pi ph) + i\text{sin}(2 \pi ph))/2| ~\leq~ |1-c(1-\text{cos}(2 \pi ph) + i\text{sin}(2 \pi ph))/2| \\
+\Longrightarrow &~(1+c(1-\text{cos}(2 \pi ph))/2)^2 ~\leq~ (1-c(1-\text{cos}(2 \pi ph))/2)^2 \\
+\Longrightarrow &~|1+c(1-\text{cos}(2 \pi ph))/2)| ~\leq~ |1-c(1-\text{cos}(2 \pi ph))/2|, \qquad p=1,2,\dots,m+1.
+\end{align*}
+Notice that $1-\text{cos}(2\pi ph) \leq 1$ for each $p=1,2,\dots, m+1$. Hence if $c>0$ (i.e. $a>0$), 
+$c(1-\text{cos}(2 \pi ph))/2 \leq 0$ so the stability condition is satisfied for any positive value of $k$. If $c<0$
+(equivalently $a<0$) then $c(1-\text{cos}(2 \pi ph))/2 \geq 0$ so the stability condition cannot be satisfied. We
+conclude that the method is stable for all $c>0$ and unstable for all $c<0$.
+
+% Part (d)
+\item Using method (\ref{a}), the approximation $U^{n+1}_j$ depends on the points $U^{n+1}_j,~U^{n+1}_{j-1},~
+U^n_j,$ and $U^n_{j-1}$. Because of the dependence on points at time $t_{n+1}$ (i.e. because the method is
+explicit) as the grid is refined the numerical domain of dependence of a point $(X,T)$ approaches 
+$(-\infty,X]$. Since we have periodic boundary conditions on $[0,1]$ in this case, the numerical domain
+of dependence converges to the entire interval $[0,1]$ as $k,h\goto0$. The domain of dependence of the PDE is
+clearly always contained in the numerical one. Therefore the CFL condition is always satisfied, regardless of the
+sign of $a$. So knowing that the CFL condition is satisfied does not actually provide us with any information.
+
+If $a>0$ the method is stable, as we saw in part (c), and the CFL condition is automatically satisfied, so in this
+case satisfying the CFL condition is sufficient for stability. For $a<0$ the CFL condition is satisfied, but the
+method is unstable, so satisfying the CFL condition is insufficient for stability.
+
+\end{enumerate}
+
+
+\end{homeworkProblem}
+
+
+% Problem 2
+\begin{homeworkProblem}
+    Consider the dispersive PDE $u_t + \gamma u_{xxx} = 0$ with periodic boundary
+conditions on an interval $a \leq x \leq b$.  
+
+\begin{enumerate} 
+\item The third-derivative term could be approximated by either 
+\begin{equation} \label{2a}
+u_{xxx}(x_j,t_n) \approx \frac 1 {h^3}(-U_{j-2}^n + 3U_{j-1}^n - 3U_j^n + U_{j+1}^n)
+\end{equation} 
+or by 
+\begin{equation} \label{2b}
+u_{xxx}(x_j,t_n) \approx \frac 1 {h^3}(-U_{j-1}^n + 3U_{j}^n - 3U_{j+1}^n + U_{j+2}^n)
+\end{equation} 
+Show that either one is first-order accurate.  
+
+\item Suppose you plan to use a trapezoid discretization in time for a
+problem where $\gamma >0$.  Which form of spatial discretization
+\eqn{2a} or \eqn{2b} would be better?  Justify your answer.
+
+\item Implement a Crank-Nicolson type method for this equation, which uses
+the trapezoid method in time together with the spatial discretization from
+above that you determined is best for the case $\gamma >0$.
+Your implementation should allow arbitrary values of the endpoints $a$ and
+$b$ of the spatial interval, since two different choices are required below.
+
+Test your method by showing it is first order accurate 
+for initial data $u(x,0) = \\text{sin}(px)$ for integer $p$ such as $p=2$ on the
+interval $0 \leq x \leq 2\pi$.  Note that 
+you can compute the exact solution for such data.
+\end{enumerate}
+    
+    
+    \vskip 1cm
+    \textbf{Solution:} \\
+    
+\begin{enumerate}
+
+% Part (a)
+ \item Let $u$ denote $u(x,t)$. We use the following Taylor expansions:
+ \begin{align*}
+ u(x+2h,t) &= u+2hu_x +2h^2u_{xx}+\frac{4h^3}{3}u_{xxx}+\frac{16h^4}{24}u_{4x} + O(h^5), \\
+ u(x+h,t) &= u+hu_x + \frac{h^2}{2}u_{xx}+\frac{h^3}{6}u_{xxx}+\frac{h^4}{24}u_{4x}+O(h^5),\\
+ u(x-h,t) &= u-hu_x + \frac{h^2}{2}u_{xx}-\frac{h^3}{6}u_{xxx}+\frac{h^4}{24}u_{4x}+O(h^5),\\
+ u(x-2h,t) &= u-2hu_x +2h^2u_{xx}-\frac{4h^3}{3}u_{xxx}+\frac{16h^4}{24}u_{4x} + O(h^5).
+ \end{align*}
+ 
+ Substituting these into the right-hand side of (\ref{2a}) and grouping terms in of powers of $h$ gives
+ \begin{align*}
+ &\frac{1}{h^3}\left((3-3)u+h(1-3+2)u_x+h^2\left(\half+\frac{3}{2}-2\right)u_{xx}+
+ h^3\left(\frac{1}{6}-\half+\frac{4}{3}\right)u_{xxx} +
+ h^4\left(\frac{1}{24}+\frac{3}{24}-\frac{16}{24}\right)u_{4x}+O(h^5)\right) \\
+ &= u_{xxx}-\frac{h}{2}u_{4x} +O(h^2).
+ \end{align*}
+ 
+ Carrying out the same procedure for the right-hand side of (\ref{2b}) yields
+ \begin{align*}
+ &\frac{1}{h^3}\left((3-3)u+h(2-3+1)u_x+h^2\left(2-\frac{3}{2}-\half\right)u_{xx}+
+ h^3\left(\frac{4}{3}-\half+\frac{1}{6}\right)u_{xxx} +
+ h^4\left(\frac{16}{24}-\frac{3}{24}-\frac{1}{24}\right)u_{4x}+O(h^5)\right) \\
+ &= u_{xxx}+\frac{h}{2}u_{4x} +O(h^2).
+ \end{align*}
+ 
+ Hence both methods give first order approximations to $u_{xxx}$.
+ 
+% Part(b)
+ \item Notice that a method based on (\ref{2a}) draws more information from points on the left and (\ref{2b}) from
+ points on the right. If $u(x,0) = u_0(x)$ then we have
+ \begin{align*}
+ ~&~u_t = -\gamma u_{xxx} \\
+ \Longrightarrow &~ \hat u_t = \gamma i\xi^3\hat u \\
+ \Longrightarrow &~\hat u~ = e^{i\gamma \xi^3t}\hat u_o.
+ \end{align*}
+ Taking the inverse Fourier transform gives
+ \begin{equation*}
+ u(x,t) = \frac{1}{\sqrt{2\pi}}\int^\infty_\infty \hat u_o(\xi)e^{i\xi(x+\gamma\xi^2t)}d\xi.
+ \end{equation*}
+ Hence the Fourier component corresponding to wavenumber $\xi$ moves with velocity $-\gamma \xi^2$. It follows
+ that solutions of the PDE will move to the left if $\gamma >0$ and to the right if $\gamma<0$. Since the 
+ trapezoidal method is absolutely stable and gives rise to a method which has a numerical domain of dependence
+ including the entire interval $[a,b]$, we do not need to worry as much about stability and the CFL condition
+ being satisfied when choosing between (\ref{2a}) and (\ref{2b}). Instead we should choose the scheme better
+ suited to the PDE. In this case a numerical method using (\ref{2b}) is preferable since it samples more points
+ to the right, which is consistent with our expectation that information will be travelling to the left as time
+ evolves.
+ 
+ \pagebreak
+ 
+% Part (c)
+ \item Assuming a solution of the form $u(x,t) = \text{sin}(px + a\gamma t)$ and substituting into the PDE to solve for
+ $a$ gives $u(x,t) = \text{sin}(px + p^3\gamma t)$ as an exact solution.
+ 
+ \begin{figure}
+ \centering
+ \includegraphics[width=0.6\textwidth]{2cgood}
+ \caption{Error at $t=1$ as $h$ and $k$ are refined for a method based on (\ref{2b})}
+ \label{fig:2cgood}
+ \end{figure}
+ We fix $p=2$ and $\gamma  =1$ and approximate the solution from $t=0$ to $t=1$ on the interval 
+ $0\leq x\leq 2\pi$. Since (\ref{2b}) is first order accurate and the trapezoidal method is second order accurate
+ it is reasonable to expect the method obtained by combining the two is $O(k^2+h)$ accurate. Hence we fix
+ $k = \sqrt{h}/2$ as we refine the grid to create the error plot in Figure (\ref{fig:2cgood}).
+ 
+ The numerically approximated order of accuracy is $0.93$. If we relax the condition on $k$ and allow $k=O(h)$
+ then the accuracy improves substantially. By modifying the relationship between $h$ and $k$ we obtain approximate
+ orders of accuracy ranging from $0.88$ to $1.63$.
+ 
+ \begin{figure}
+ \centering
+ \includegraphics[width=0.6\textwidth]{2cbad}
+ \caption{Error at $t=1$ as $h$ and $k$ are refined for a method based on (\ref{2a})}
+ \label{fig:2cbad}
+ \end{figure}
+ 
+ Just to check that we were correct in choosing to base our method off (\ref{2b}) rather than (\ref{2a}) we have
+ computed the error using all the same parameters, but using the alternate method. The results are presented in
+ Figure (\ref{fig:2cbad}).
+ 
+ \vskip 1cm
+ The code used to run the numerical trials can be found in the appendix.
+ 
+\end{enumerate}
+    
+    
+\end{homeworkProblem}
+
+\pagebreak
+
+% Problem 3
+\begin{homeworkProblem}
+    Now consider the KdV equation $u_t + 6uu_x + u_{xxx} = 0$.  
+This Korteweg - de Vries equation is famous --- read about it if you are not
+familiar with it.  Even though this equation is nonlinear,
+there are exact ``solitary wave'' solutions that consist of a translating wave of
+the form $u(x,t) = \eta(x-\alpha^2 t)$ for special initial data of the form
+\begin{equation} \label{3a}
+\eta(x) = \frac {\alpha^2}{2} \text{sech}^2\left(\alpha x/2\right)
+\end{equation} 
+for any choice of parameter $\alpha >0$.  Note that taller pulses
+propagate more rapidly.  An amazing feature of such problems is the
+way two such pulses interact as ``solitons''. 
+
+Construct a first-order accurate method by combining your solution to Problem 2
+with a first-order upwind method for the hyperbolic equation
+\begin{equation} \label{3b}
+u_t + 3(u^2)_x = 0.
+\end{equation} 
+Use the first-order fractional step approach to combine the methods --- i.e.
+in each time step, first advance the solution by taking a step with the $u_t
++ u_{xxx} = 0$ to get an intermediate solution $U^*$, and then use this as
+initial data for a step in which you solve \eqn{3b} by the upwind method for
+this nonlinear conservation law.  
+
+Again use periodic boundary conditions.  The true solution is not periodic,
+but decays exponentially to zero so as long as the interval is long enough
+relative to the width of the solitary wave, so this should not affect errors
+computed using a periodic extension of \eqn{3a}.
+
+Test your method on the interval $-1 \leq x \leq 3$ with $\alpha=10$ out to
+time $t=0.02$.  Demonstrate that your method is stable and first-order
+accurate by refining the grid with $r = k/h$ fixed.
+
+Estimate the maximum stable value of $r$ based on stability theory,
+justifying your estimate, and confirm that this is consistent with
+what you observe from your numerical method.
+
+\vskip 10pt
+Note that this is not a very accurate method!  If you want to play around
+with soliton interaction (optional) you might try the following data:
+\begin{equation} 
+\eta(x) = \frac {\alpha_1^2}{2} \text{sech}^2\left(\alpha_1 (x + 2)/2
+\right) + \frac {\alpha_2^2}{2} \text{sech}^2\left(\alpha_2 (x + 1)/2\right)
+\end{equation} 
+with $\alpha_1 = 25, ~\alpha_2= 16$ on the interval $-3\leq x \leq 2$.  
+    
+    \vskip 1cm
+    \textbf{Solution:} \\
+    It is stated in the text that if one can show $\| \mathcal{N}_A(U,k)\| \leq \|U\|$ and
+    $\| \mathcal{N}_B(U,k)\| \leq \|U\|$ (where the same norm is used in both instances)
+    then one can demonstrate the stability of a fractional step method using $\mathcal{N}_A$ and $\mathcal{N}_B$
+    as its first and second steps. It also alerted us to the possibility that the stability of the two methods
+    independently may not be enough to guarantee a fractional step method which is stable.
+    However the task of proving the norm condition proved to be too daunting for the author, so keeping the 
+    warning in mind, we cautiously attempt to see whether enforcing the separate stability conditions
+    from each method can inform our numerical tests to determine $r = k/h$.
+    
+    
+    As we argued in problem 2 we are not very worried about the stability of our solution to problem 2 since 
+    it always satisfies the CFL condition and has very good stability properties due its use of the trapezoidal
+    method, at least for $\gamma >0$. In this particular instance it is used in a fractional step method to
+    solve the equation $u_t + u_{xxx}=0$, in which case $\gamma = 1 > 0$. Hence we expect it to behave well.
+    
+    We saw in class that the stability of the upwind method agrees with the restriction imposed by the CFL
+    condition. Thus if we can determine the CFL condition for the hyperbolic equation being solved by the upwind
+    method at each step, $u_t +3(u^2)_x=0$, then we will be able to get a rough estimate of the maximal value
+    $r$ can take. First note that the PDE can be rewritten
+    \[
+    u_t + 6uu_x=0
+    \]
+    which we recognize as Burger's equation. This simple quasilinear PDE can be solved using the method of
+    characteristics. If we use $\eta(x)$ for the initial data we obtain
+    \[
+    u(x,t) = \eta(\xi)
+    \]
+    where $\xi$ is given implicitly by 
+    \[
+    \xi = x -3\alpha^2\text{sech}^2(\alpha \xi/2)t.
+    \]
+    From the form of the solution we can see that the initial data is simply propagated to the right at varying
+    speeds determined by $3\alpha^2\text{sech}^2(\alpha \xi/2)$. Since $0\leq \text{sech}(x)\leq 1$ 
+    we can infer that the fastest moving data will move to the right with speed $3\alpha^2 = 300$ 
+    (for $\alpha=10$). In fact this occurs for the initial data corresponding to $\xi=0$. Therefore, 
+    at worst, the solution at a point $(X,T)$ has domain of dependence ${X-300T}$. For other values of 
+    $\xi$ the domain of dependence of a point $(X,T)$ will be
+    contained in the interval $[X-300T,X]$. Since the numerical domain of dependence fills in the interval
+    $[X-T/r, X]$ as the grid is refined, we require $300\leq 1/r$ or $r\leq 1/300$.
+    
+    \begin{figure}
+    \centering
+    \includegraphics[width=0.6\textwidth]{3all}
+    \caption{Error at $t=0.02$ as $h$ and $k$ are refined with $k=300h$}
+    \label{fig:3}
+    \end{figure}
+    This restriction on $r$ agrees well with the numerical test. As we see in Figure (\ref{fig:3}) for $r=1/300$
+    the method exhibits first order accuracy (approximate order of accuracy: 0.87). If we leave off the 
+    two data points corresponding to the coarsest grids the approximate order of accuracy increases to $0.91$.
+    If we allow $r$ to be slightly larger, say $1/275$, the method appears to be stable for smaller numbers
+    of time steps, but as the grid is refined it eventually becomes unstable and the approximate solution blows
+    up. It was difficult for me to test numerically exactly where the threshold lies due to
+    the time needed to solve the problem on very fine grids. The largest value of $r$ for which I numerically
+    verified instability was $r=1/277$. The method remained stable even for large numbers of time steps 
+    when $r$ was taken to be $1/300$. Note that the initial data fed into the upwind method is actually the
+    result of applying the method devised in problem 2 to the actual initial data $\eta(x)$, so we do not
+    expect the analytic upper bound on $r$ to exactly match the numerical one. In any case, the numerical 
+    results agree with the restriction found above.
+    
+    \vskip 1cm
+    The code used to run the numerical trials can be found in the appendix.
+    
+\end{homeworkProblem}
+
+
+        
+
+\pagebreak
+
+\hfill
+
+\pagebreak
+~~
+\vskip 10cm
+\centering
+\huge \textbf{Appendix: Code}
+
+
+\end{document}
+
